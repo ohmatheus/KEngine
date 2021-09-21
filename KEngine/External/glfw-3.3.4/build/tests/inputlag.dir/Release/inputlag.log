@@ -1,0 +1,6 @@
+﻿  Building Custom Rule D:/Projects/Savannah/External/glfw-3.3.4/tests/CMakeLists.txt
+  inputlag.c
+  getopt.c
+  glad_gl.c
+  Generating Code...
+  inputlag.vcxproj -> D:\Projects\Savannah\External\glfw-3.3.4\build\tests\Release\inputlag.exe

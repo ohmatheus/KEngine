@@ -1,0 +1,10 @@
+^D:\PROJECTS\SAVANNAH\EXTERNAL\GLFW-3.3.4\BUILD\CMAKEFILES\BC5FDF3822F525842E2809DDACC5BD82\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/Projects/Savannah/External/glfw-3.3.4 -BD:/Projects/Savannah/External/glfw-3.3.4/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file D:/Projects/Savannah/External/glfw-3.3.4/build/GLFW.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

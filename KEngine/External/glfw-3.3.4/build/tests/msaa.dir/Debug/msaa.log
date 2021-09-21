@@ -1,0 +1,6 @@
+﻿  Building Custom Rule D:/Projects/Savannah/External/glfw-3.3.4/tests/CMakeLists.txt
+  msaa.c
+  getopt.c
+  glad_gl.c
+  Generating Code...
+  msaa.vcxproj -> D:\Projects\Savannah\External\glfw-3.3.4\build\tests\Debug\msaa.exe
