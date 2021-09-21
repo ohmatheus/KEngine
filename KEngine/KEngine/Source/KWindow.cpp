@@ -25,7 +25,7 @@ namespace
 	void onMouseMoved(GLFWwindow* window, double xpos, double ypos)
 	{
 		KWindow* gameWindow = (KWindow*)glfwGetWindowUserPointer(window);
-		gameWindow->GetGame()->OnMouseMoved(xpos, ypos);
+		gameWindow->GetGame()->OnMouseMoved((float)xpos, (float)ypos);
 	}
 
 	//----------------------------------------------------------
@@ -39,7 +39,7 @@ namespace
 	void onScrollMoved(GLFWwindow* window, double xoffset, double yoffset)
 	{
 		KWindow* gameWindow = (KWindow*)glfwGetWindowUserPointer(window);
-		gameWindow->GetGame()->OnScrollMoved(xoffset, yoffset);
+		gameWindow->GetGame()->OnScrollMoved((float)xoffset, (float)yoffset);
 	}
 }
 

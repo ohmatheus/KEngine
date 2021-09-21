@@ -6,9 +6,7 @@
 //----------------------------------------------------------
 IScene::IScene(Game* game)
 : m_game(game)
-{
-	m_game->AddScene(this);
-}
+{}
 
 //----------------------------------------------------------
 IScene::~IScene()
@@ -16,23 +14,32 @@ IScene::~IScene()
 }
 
 //----------------------------------------------------------
-IScene::IScene(const IScene &from)
+IScene::IScene(const IScene& other)
 {
+	m_camera = other.m_camera;
+	m_game = other.m_game;
 }
 
 //----------------------------------------------------------
-void		IScene::PreUpdate(float dt)
+IScene* IScene::Clone()
 {
+	return nullptr;
 }
 
 //----------------------------------------------------------
-void		IScene::Update(float dt)
-{
-}
+void	IScene::OnKeyEvent(int key, int scancode, int action, int mods)
+{}
 
 //----------------------------------------------------------
-void		IScene::Render(RenderSystem *renderSystem)
-{
-}
+void	IScene::OnMouseMoved(float xpos, float ypos)
+{}
+
+//----------------------------------------------------------
+void	IScene::OnMouseKeyEvent(int button, int action, int mods)
+{}
+
+//----------------------------------------------------------
+void	IScene::OnScrollMoved(float xoffset, float yoffset)
+{}
 
 //----------------------------------------------------------

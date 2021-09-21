@@ -76,7 +76,7 @@ void	KApplication::Loop()
 		m_RenderWindow->ProcessWindowInput();
 
 		// logic
-		m_Game->Update();
+		m_Game->Update((float)dt);
 		m_Game->Render();
 
 		// rendering
