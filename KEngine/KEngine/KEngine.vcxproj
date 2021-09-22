@@ -31,6 +31,7 @@
     <ClCompile Include="Source\stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\External\include\stb_image.h" />
     <ClInclude Include="Source\Game.h" />
     <ClInclude Include="Source\GLShader.h" />
     <ClInclude Include="Source\IScene.h" />

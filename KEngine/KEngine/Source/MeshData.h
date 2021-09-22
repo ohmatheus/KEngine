@@ -15,7 +15,7 @@ public:
 
 	uint	VerticesNbr() { return m_VerticeNbr; }
 
-protected:
+//protected:
 	uint	m_VBO;
 	uint	m_VAO;
 	uint	m_Size;		// Specifies the number of components per generic vertex attribute.

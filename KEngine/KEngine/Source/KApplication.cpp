@@ -8,12 +8,12 @@
 
 #include <GLFW/glfw3.h>
 
+
 //----------------------------------------------------------
 KApplication::KApplication()
 :	m_RenderWindow(nullptr)
 ,	m_Game(nullptr)
-{
-}
+{}
 
 //----------------------------------------------------------
 KApplication::~KApplication()

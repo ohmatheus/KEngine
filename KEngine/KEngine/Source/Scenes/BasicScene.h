@@ -8,7 +8,7 @@ class BasicScene : public IScene
 public:
 	BasicScene(Game*);
 	virtual ~BasicScene();
-	BasicScene(const BasicScene&);
+	BasicScene(BasicScene const&);
 
 	virtual IScene*		Clone();
 	virtual void		BuildScene();
