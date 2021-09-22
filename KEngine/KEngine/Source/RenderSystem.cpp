@@ -129,10 +129,10 @@ void	RenderSystem::_InitDefaultShader()
 		const char* fragShader =
 			"#version 410 core												\n"
 			"\n"
-			"out vec4		FragColor;										\n"
-			"\n"
 			"in vec3		ourColor;										\n"
 			"in vec2		TexCoord;										\n"
+			"\n"
+			"out vec4		FragColor;										\n"
 			"\n"
 			"uniform sampler2D	ourTexture;									\n"
 			"\n"
@@ -226,9 +226,12 @@ void	RenderSystem::_InitMeshDatas()
 		glBindBuffer(GL_ARRAY_BUFFER, mesh->m_VBO);
 		glBufferData(GL_ARRAY_BUFFER, ARRAY_COUNT(vertices) * sizeof(float), vertices, GL_STATIC_DRAW);
 
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*) 0);
 		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
 		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+		glEnableVertexAttribArray(0);
+		glEnableVertexAttribArray(1);
+		glEnableVertexAttribArray(2);
 
 		glEnableVertexAttribArray(0);
 		glBindVertexArray(0);
