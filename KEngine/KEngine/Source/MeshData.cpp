@@ -20,8 +20,6 @@ MeshData::~MeshData()
 //----------------------------------------------------------
 void	MeshData::SetVertices(float *vertices, uint componentNbr, uint size, uint stride, uint mode)
 {
-	m_Vertices = (float*)malloc(componentNbr * sizeof(float));
-	std::memcpy(m_Vertices, vertices, componentNbr * sizeof(float)); // to remove, vertices arg is enought
 	m_Size = size;
 	m_Stride = stride;
 	m_Mode = mode;
@@ -38,13 +36,12 @@ void	MeshData::SetVertices(float *vertices, uint componentNbr, uint size, uint s
 	// GL_STATIC_DRAW: the data will most likely not change at all or very rarely.
 	// GL_DYNAMIC_DRAW : the data is likely to change a lot.
 	// GL_STREAM_DRAW : the data will change every time it is drawn.
-	glBufferData(GL_ARRAY_BUFFER, componentNbr * sizeof(float), m_Vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, componentNbr * sizeof(float), vertices, GL_STATIC_DRAW);
 	glVertexAttribPointer(0, m_Size, GL_FLOAT, GL_FALSE, m_Stride, (void*)0);
 
 	glEnableVertexAttribArray(0);
 	glBindVertexArray(0);
 
-	delete m_Vertices;
 	m_Vertices = nullptr;
 }
 

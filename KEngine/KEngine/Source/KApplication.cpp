@@ -34,13 +34,13 @@ void	KApplication::Setup()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	m_RenderWindow = new KWindow();
-	m_RenderWindow->CreateAndOpen("K Main Window", 0.2f, 0.3f, 0.3f);
-
 	m_ControllerWindow = new KWindow();
 	m_ControllerWindow->CreateAndOpen("K Controller Window", 0.3f, 0.2f, 0.3f);
 
-	glClearDepth(1.f);
+	m_RenderWindow = new KWindow();
+	m_RenderWindow->CreateAndOpen("K Main Window", 0.2f, 0.3f, 0.3f);
+
+	//glClearDepth(1.f);
 	glEnable(GL_DEPTH_TEST);
 
 	m_Game = new Game(m_RenderWindow);

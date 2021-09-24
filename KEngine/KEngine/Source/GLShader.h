@@ -24,6 +24,8 @@ public:
 	uint			Attribute(const std::string& attribute);
 	uint			Uniform(const std::string& uniform);
 
+	uint			ProgramID() { return m_ProgramID; }
+
 	enum	ShaderType
 	{
 		VERTEX_SHADER,
