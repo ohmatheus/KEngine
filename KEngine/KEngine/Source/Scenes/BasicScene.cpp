@@ -38,20 +38,16 @@ unsigned int g_textureFace;
 //----------------------------------------------------------
 void	BasicScene::BuildScene()
 {
-	m_ShaderName = "DefaultShader";
-	m_MeshName = "Rectangle";
-	m_Color = glm::vec4(1.f, 0.f, 1.f, 1.f);
-
 	m_Position = glm::vec3(0.f);
 	m_Rotation = glm::vec3(0.f);
 	m_Scale = glm::vec3(1.f);
 
-	m_Yaw = 0.f;
+	m_Yaw = 25.f;
 	m_Pitch = 0.f;
 	m_Roll = 0.f;
 
 
-	// Colored Rect
+	// container
 	{
 		// -------- Texture --------
 		glGenTextures(1, &g_textureContainer);
@@ -144,60 +140,6 @@ void	BasicScene::Render()
 		//	return result;
 	}
 
-	// Basic
-	if (false)
-	{
-		GLShader* shader = m_game->GetRenderSystem()->GetShader(m_ShaderName);
-		MeshData* mesh = m_game->GetRenderSystem()->GetMesh(m_MeshName);
-		
-		assert(shader != nullptr);
-		assert(mesh != nullptr);
-
-		shader->Bind();
-		glUniformMatrix4fv(shader->Uniform("model"), 1, GL_FALSE, glm::value_ptr(modelW));
-		glUniformMatrix4fv(shader->Uniform("view"), 1, GL_FALSE, glm::value_ptr(m_camera.GetView()));
-		glUniformMatrix4fv(shader->Uniform("proj"), 1, GL_FALSE, glm::value_ptr(m_camera.m_ProjMat));
-		glUniform4fv(shader->Uniform("uColor"), 1, glm::value_ptr(m_Color));
-		glBindVertexArray(mesh->VAO());
-		//glBindBuffer(GL_ARRAY_BUFFER, mesh->VBO()); // is it necessary to couple that with glBindVertexArray ?
-		glDrawArrays(mesh->Mode(), 0, mesh->VerticesNbr());
-		glBindVertexArray(0);
-		glEnableVertexAttribArray(0);
-		shader->Unbind();
-	}
-
-	// Textured rectangle
-	if (false)
-	{
-		GLShader* shader = m_game->GetRenderSystem()->GetShader("TexturedMeshShader_Colored");
-		MeshData* mesh = m_game->GetRenderSystem()->GetMesh("ColoredTexturedRectangle");
-
-		assert(shader != nullptr);
-		assert(mesh != nullptr);
-
-		shader->Bind();
-		
-		glUniformMatrix4fv(shader->Uniform("model"), 1, GL_FALSE, glm::value_ptr(modelW));
-		glUniformMatrix4fv(shader->Uniform("view"), 1, GL_FALSE, glm::value_ptr(m_camera.GetView()));
-		glUniformMatrix4fv(shader->Uniform("proj"), 1, GL_FALSE, glm::value_ptr(m_camera.m_ProjMat));
-
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, g_textureContainer);
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, g_textureFace);
-		glUniform1i(glGetUniformLocation(shader->ProgramID(), "texture1"), 0); // set it manually
-		glUniform1i(glGetUniformLocation(shader->ProgramID(), "texture2"), 1); // set it manually
-
-
-		glBindVertexArray(mesh->VAO());
-
-		//glBindBuffer(GL_ARRAY_BUFFER, mesh->VBO()); // is it necessary to couple that with glBindVertexArray ?
-		glDrawArrays(mesh->Mode(), 0, mesh->VerticesNbr());
-		glBindVertexArray(0);
-		glEnableVertexAttribArray(0);
-		shader->Unbind();
-	}
-
 	// Textured cube
 	if (true)
 	{
@@ -220,10 +162,8 @@ void	BasicScene::Render()
 		glUniform1i(glGetUniformLocation(shader->ProgramID(), "texture1"), 0); // set it manually
 		glUniform1i(glGetUniformLocation(shader->ProgramID(), "texture2"), 1); // set it manually
 
-
 		glBindVertexArray(mesh->VAO());
 
-		//glBindBuffer(GL_ARRAY_BUFFER, mesh->VBO()); // is it necessary to couple that with glBindVertexArray ?
 		glDrawArrays(mesh->Mode(), 0, mesh->VerticesNbr());
 		glBindVertexArray(0);
 		glEnableVertexAttribArray(0);

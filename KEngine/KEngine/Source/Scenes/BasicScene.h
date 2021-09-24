@@ -22,10 +22,7 @@ private:
 	glm::vec3			m_Position;
 	glm::vec3			m_Rotation;
 	glm::vec3			m_Scale;
-	glm::vec4			m_Color;
 	float				m_Pitch;
 	float				m_Yaw;
 	float				m_Roll;
-	std::string			m_ShaderName; // TODO replace by an ID
-	std::string			m_MeshName; // TODO replace by an ID
 };

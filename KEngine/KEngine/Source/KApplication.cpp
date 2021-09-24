@@ -41,7 +41,7 @@ void	KApplication::Setup()
 	m_RenderWindow->CreateAndOpen("K Main Window", 0.2f, 0.3f, 0.3f);
 
 	//glClearDepth(1.f);
-	//glEnable(GL_DEPTH_TEST);
+	glEnable(GL_DEPTH_TEST);
 
 	m_Game = new Game(m_RenderWindow);
 	m_RenderWindow->SetGame(m_Game);
