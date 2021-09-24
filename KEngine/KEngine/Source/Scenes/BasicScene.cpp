@@ -14,22 +14,16 @@
 //----------------------------------------------------------
 BasicScene::BasicScene(Game* game)
 :	IScene(game)
-{
-
-}
+{}
 
 //----------------------------------------------------------
 BasicScene::~BasicScene()
-{
-
-}
+{}
 
 //----------------------------------------------------------
 BasicScene::BasicScene(BasicScene const& other)
 :	super(other)
-{
-
-}
+{}
 
 //----------------------------------------------------------
 IScene* BasicScene::Clone()
@@ -38,7 +32,8 @@ IScene* BasicScene::Clone()
 	return clone;
 }
 
-unsigned int g_texture;
+unsigned int g_textureContainer;
+unsigned int g_textureFace;
 
 //----------------------------------------------------------
 void	BasicScene::BuildScene()
@@ -59,8 +54,8 @@ void	BasicScene::BuildScene()
 	// Colored Rect
 	{
 		// -------- Texture --------
-		glGenTextures(1, &g_texture);
-		glBindTexture(GL_TEXTURE_2D, g_texture);
+		glGenTextures(1, &g_textureContainer);
+		glBindTexture(GL_TEXTURE_2D, g_textureContainer);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT); // GL_CLAMP
@@ -80,7 +75,35 @@ void	BasicScene::BuildScene()
 			std::cout << "Failed to load texture" << data << std::endl;
 		}
 
-		glBindTexture(GL_TEXTURE_2D, 0);
+		stbi_image_free(data);
+	}
+
+	// awesomeface.png
+	{
+		// -------- Texture --------
+		glGenTextures(1, &g_textureFace);
+		glBindTexture(GL_TEXTURE_2D, g_textureFace);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER); // GL_CLAMP
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		int width, height, nrChannels;
+		std::string path = ImagePath("awesomeface.png");
+		stbi_set_flip_vertically_on_load(true);
+		unsigned char* data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
+		stbi_set_flip_vertically_on_load(false);
+		if (data)
+		{
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+			glGenerateMipmap(GL_TEXTURE_2D);
+		}
+		else
+		{
+			std::cout << "Failed to load texture" << data << std::endl;
+		}
+
 		stbi_image_free(data);
 	}
 	
@@ -88,15 +111,11 @@ void	BasicScene::BuildScene()
 
 //----------------------------------------------------------
 void	BasicScene::OnSceneStart()
-{
-
-}
+{}
 
 //----------------------------------------------------------
 void	BasicScene::Update(float dt)
-{
-
-}
+{}
 
 //----------------------------------------------------------
 void	BasicScene::Render()
@@ -148,20 +167,62 @@ void	BasicScene::Render()
 	}
 
 	// Textured rectangle
-	if (true)
+	if (false)
 	{
-		GLShader* shader = m_game->GetRenderSystem()->GetShader("TexturedMeshShader");
+		GLShader* shader = m_game->GetRenderSystem()->GetShader("TexturedMeshShader_Colored");
 		MeshData* mesh = m_game->GetRenderSystem()->GetMesh("ColoredTexturedRectangle");
 
 		assert(shader != nullptr);
 		assert(mesh != nullptr);
 
 		shader->Bind();
+		
 		glUniformMatrix4fv(shader->Uniform("model"), 1, GL_FALSE, glm::value_ptr(modelW));
 		glUniformMatrix4fv(shader->Uniform("view"), 1, GL_FALSE, glm::value_ptr(m_camera.GetView()));
 		glUniformMatrix4fv(shader->Uniform("proj"), 1, GL_FALSE, glm::value_ptr(m_camera.m_ProjMat));
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, g_textureContainer);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, g_textureFace);
+		glUniform1i(glGetUniformLocation(shader->ProgramID(), "texture1"), 0); // set it manually
+		glUniform1i(glGetUniformLocation(shader->ProgramID(), "texture2"), 1); // set it manually
+
+
 		glBindVertexArray(mesh->VAO());
-		glBindTexture(GL_TEXTURE_2D, g_texture);
+
+		//glBindBuffer(GL_ARRAY_BUFFER, mesh->VBO()); // is it necessary to couple that with glBindVertexArray ?
+		glDrawArrays(mesh->Mode(), 0, mesh->VerticesNbr());
+		glBindVertexArray(0);
+		glEnableVertexAttribArray(0);
+		shader->Unbind();
+	}
+
+	// Textured cube
+	if (true)
+	{
+		GLShader* shader = m_game->GetRenderSystem()->GetShader("TexturedMeshShader");
+		MeshData* mesh = m_game->GetRenderSystem()->GetMesh("TexturedCube");
+
+		assert(shader != nullptr);
+		assert(mesh != nullptr);
+
+		shader->Bind();
+
+		glUniformMatrix4fv(shader->Uniform("model"), 1, GL_FALSE, glm::value_ptr(modelW));
+		glUniformMatrix4fv(shader->Uniform("view"), 1, GL_FALSE, glm::value_ptr(m_camera.GetView()));
+		glUniformMatrix4fv(shader->Uniform("proj"), 1, GL_FALSE, glm::value_ptr(m_camera.m_ProjMat));
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, g_textureContainer);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, g_textureFace);
+		glUniform1i(glGetUniformLocation(shader->ProgramID(), "texture1"), 0); // set it manually
+		glUniform1i(glGetUniformLocation(shader->ProgramID(), "texture2"), 1); // set it manually
+
+
+		glBindVertexArray(mesh->VAO());
+
 		//glBindBuffer(GL_ARRAY_BUFFER, mesh->VBO()); // is it necessary to couple that with glBindVertexArray ?
 		glDrawArrays(mesh->Mode(), 0, mesh->VerticesNbr());
 		glBindVertexArray(0);

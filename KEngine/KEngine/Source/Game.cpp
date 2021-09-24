@@ -43,11 +43,12 @@ void		Game::Setup()
 		return;
 	}
 
+	m_RenderWindow->MakeCurrent();
+
 	// During init, enable debug output
 	glEnable(GL_DEBUG_OUTPUT);
 	glDebugMessageCallback(MessageCallback, 0);
 
-	m_RenderWindow->MakeCurrent();
 
 	_InitRenderSystem();
 

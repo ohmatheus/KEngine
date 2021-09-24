@@ -101,7 +101,7 @@ void	RenderSystem::_InitDefaultShader()
 		RegisterShader("DefaultShader", shader);
 	}
 
-	// TexturedMeshShader
+	// TexturedMeshShader colored
 	{
 		GLShader* shader = new GLShader();
 
@@ -134,11 +134,69 @@ void	RenderSystem::_InitDefaultShader()
 			"\n"
 			"out vec4		FragColor;										\n"
 			"\n"
-			"uniform sampler2D	ourTexture;									\n"
+			"uniform sampler2D	texture1;									\n"
+			"uniform sampler2D	texture2;									\n"
 			"\n"
 			"void main()													\n"
 			"{																\n"
-			"	FragColor = texture(ourTexture, TexCoord);					\n"
+			"	FragColor = mix(texture(texture1, TexCoord), texture(texture2, TexCoord), 0.2) * vec4(ourColor, 1.0);	\n"
+			"}																\n"
+			;
+
+		shader->LoadShader(GLShader::VERTEX_SHADER, vertexShader);
+		shader->LoadShader(GLShader::FRAGMENT_SHADER, fragShader);
+		shader->CreateAndLink();
+		shader->Bind();
+		{
+			shader->AddUniform("model");
+			shader->AddUniform("view");
+			shader->AddUniform("proj");
+		}
+		shader->Unbind();
+
+		GL_CHECK_ERRORS
+
+		shader->m_name = "TexturedMeshShader_Colored";
+		RegisterShader("TexturedMeshShader_Colored", shader);
+	
+	}
+
+	// TexturedMeshShader
+	{
+		GLShader* shader = new GLShader();
+
+		const char* vertexShader =
+			"#version 410 core												\n"
+			"layout(location = 0) in vec3 aPos;								\n"
+			"layout(location = 1) in vec2 aTexCoord;						\n"
+			"\n"
+			"uniform mat4 model;											\n"
+			"uniform mat4 view;												\n"
+			"uniform mat4 proj;												\n"
+			"\n"
+			"out vec3 ourColor;												\n"
+			"out vec2 TexCoord;												\n"
+			"\n"
+			"void main()													\n"
+			"{																\n"
+			"	gl_Position = proj * view * model * vec4(aPos, 1.0f);		\n"
+			"	TexCoord = aTexCoord;										\n"
+			"}																\n"
+			;
+
+		const char* fragShader =
+			"#version 410 core												\n"
+			"\n"
+			"in vec2		TexCoord;										\n"
+			"\n"
+			"out vec4		FragColor;										\n"
+			"\n"
+			"uniform sampler2D	texture1;									\n"
+			"uniform sampler2D	texture2;									\n"
+			"\n"
+			"void main()													\n"
+			"{																\n"
+			"	FragColor = mix(texture(texture1, TexCoord), texture(texture2, TexCoord), 0.2);	\n"
 			"}																\n"
 			;
 
@@ -227,15 +285,87 @@ void	RenderSystem::_InitMeshDatas()
 		glBufferData(GL_ARRAY_BUFFER, ARRAY_COUNT(vertices) * sizeof(float), vertices, GL_STATIC_DRAW);
 
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*) 0);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
 		glEnableVertexAttribArray(1);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 		glEnableVertexAttribArray(2);
 
 		glEnableVertexAttribArray(0);
 		glBindVertexArray(0);
 
 		RegisterMesh("ColoredTexturedRectangle", mesh);
+	}
+
+	// Textured Cube
+	{
+
+		MeshData* mesh = new MeshData;
+		float vertices[] = {
+		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+			};
+
+		mesh->m_Mode = GL_TRIANGLES;
+		mesh->m_VerticeNbr = 36;
+
+		glGenVertexArrays(1, &mesh->m_VAO);
+		glGenBuffers(1, &mesh->m_VBO);
+
+		glBindVertexArray(mesh->m_VAO);
+		// bind, 1 possible in the same time / buffer type
+		glBindBuffer(GL_ARRAY_BUFFER, mesh->m_VBO);
+		glBufferData(GL_ARRAY_BUFFER, ARRAY_COUNT(vertices) * sizeof(float), vertices, GL_STATIC_DRAW);
+
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+		glEnableVertexAttribArray(1);
+		//glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+		//glEnableVertexAttribArray(2);
+
+		glEnableVertexAttribArray(0);
+		glBindVertexArray(0);
+
+		RegisterMesh("TexturedCube", mesh);
 	}
 }
