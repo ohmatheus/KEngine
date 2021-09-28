@@ -2,6 +2,8 @@
 
 #include "IScene.h"
 
+class IObject;
+
 class BasicScene : public IScene
 {
 	typedef IScene super;
@@ -19,10 +21,5 @@ public:
 	virtual void		OnScrollMoved(float xoffset, float yoffset);
 
 private:
-	glm::vec3			m_Position;
-	glm::vec3			m_Rotation;
-	glm::vec3			m_Scale;
-	float				m_Pitch;
-	float				m_Yaw;
-	float				m_Roll;
+	std::vector<IObject*> m_Objects;
 };

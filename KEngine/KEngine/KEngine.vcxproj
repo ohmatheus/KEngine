@@ -26,9 +26,12 @@
     <ClCompile Include="Source\KWindow.cpp" />
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\MeshData.cpp" />
+    <ClCompile Include="Source\Objects\BasicObject.cpp" />
+    <ClCompile Include="Source\Objects\IObject.cpp" />
     <ClCompile Include="Source\RenderSystem.cpp" />
     <ClCompile Include="Source\Scenes\BasicScene.cpp" />
     <ClCompile Include="Source\stdafx.cpp" />
+    <ClCompile Include="Source\TextureResource.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\External\include\stb_image.h" />
@@ -38,10 +41,13 @@
     <ClInclude Include="Source\KApplication.h" />
     <ClInclude Include="Source\KWindow.h" />
     <ClInclude Include="Source\MeshData.h" />
+    <ClInclude Include="Source\Objects\BasicObject.h" />
+    <ClInclude Include="Source\Objects\IObject.h" />
     <ClInclude Include="Source\RenderSystem.h" />
     <ClInclude Include="Source\Scenes\BasicScene.h" />
     <ClInclude Include="Source\stdafx.h" />
     <ClInclude Include="Source\Steering.h" />
+    <ClInclude Include="Source\TextureResource.h" />
     <ClInclude Include="Source\Timer.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

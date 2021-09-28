@@ -5,16 +5,20 @@
 #include "Game.h"
 #include "GLShader.h"
 #include "MeshData.h"
+#include "TextureResource.h"
 
 #include <sstream>
 #include <map>
+
+#include "stb_image.h"
 
 //----------------------------------------------------------
 RenderSystem::RenderSystem(Game *game)
 :	m_Game(game)
 {
-	_InitDefaultShader();
-	_InitMeshDatas();
+	_LoadShaders();
+	_LoadMeshes();
+	_LoadTextures();
 }
 
 //----------------------------------------------------------
@@ -27,6 +31,10 @@ RenderSystem::~RenderSystem()
 	for (std::map<std::string, MeshData*>::iterator it = m_MeshBank.begin(); it != m_MeshBank.end(); it++)
 		delete it->second;
 	m_MeshBank.clear();
+
+	for (std::map<std::string, TextureResource*>::iterator it = m_TextureBank.begin(); it != m_TextureBank.end(); it++)
+		delete it->second;
+	m_TextureBank.clear();
 }
 
 //----------------------------------------------------------
@@ -54,7 +62,48 @@ bool	RenderSystem::RegisterMesh(std::string const &meshName, MeshData *mesh)
 }
 
 //----------------------------------------------------------
-void	RenderSystem::_InitDefaultShader()
+bool	RenderSystem::RegisterTexture(std::string const& textureName, TextureResource* tex)
+{
+	if (m_TextureBank[textureName] != nullptr)
+		return false;
+	m_TextureBank[textureName] = tex;
+	return true;
+}
+
+//----------------------------------------------------------
+void	RenderSystem::LoadTexture(TextureResource* tex)
+{
+	glGenTextures(1, &tex->TextureRenderId());
+
+	glBindTexture(GL_TEXTURE_2D, tex->TextureRenderId());
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, tex->Attr().m_warpSMode);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, tex->Attr().m_warpTMode); // GL_CLAMP
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, tex->Attr().m_minFilter);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, tex->Attr().m_magFilter);
+
+	int width, height, nrChannels;
+	std::string path = ImagePath(tex->RelativePath());
+	stbi_set_flip_vertically_on_load(true);
+	unsigned char* data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
+	stbi_set_flip_vertically_on_load(false);
+	if (data)
+	{
+		tex->Width() = width;
+		tex->Height() = height;
+		tex->NrChannels() = nrChannels;
+		glTexImage2D(GL_TEXTURE_2D, 0, tex->Attr().m_internalFormat, width, height, 0, tex->Attr().m_fileFormat, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	else
+	{
+		std::cout << "Failed to load texture" << data << std::endl;
+	}
+
+	stbi_image_free(data);
+}
+
+//----------------------------------------------------------
+void	RenderSystem::_LoadShaders()
 {
 	// DefaultShader
 	{
@@ -219,7 +268,7 @@ void	RenderSystem::_InitDefaultShader()
 }
 
 //----------------------------------------------------------
-void	RenderSystem::_InitMeshDatas()
+void	RenderSystem::_LoadMeshes()
 {
 	{
 		MeshData *mesh = new MeshData;
@@ -360,8 +409,6 @@ void	RenderSystem::_InitMeshDatas()
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 		glEnableVertexAttribArray(1);
-		//glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-		//glEnableVertexAttribArray(2);
 
 		glEnableVertexAttribArray(0);
 		glBindVertexArray(0);
@@ -369,3 +416,37 @@ void	RenderSystem::_InitMeshDatas()
 		RegisterMesh("TexturedCube", mesh);
 	}
 }
+
+void	RenderSystem::_LoadTextures()
+{
+	{
+		TextureResource*	tex = new TextureResource("container");
+		TextureAttr			attr;
+		attr.m_warpSMode = GL_REPEAT;
+		attr.m_warpTMode = GL_REPEAT;
+		attr.m_minFilter = GL_LINEAR_MIPMAP_LINEAR;
+		attr.m_magFilter = GL_LINEAR;
+		attr.m_internalFormat = GL_RGB;
+		attr.m_fileFormat = GL_RGB;
+		tex->SetTextureAttributes(attr);
+		tex->SetRelativePath("container.jpg");
+		LoadTexture(tex);
+		RegisterTexture(tex->Name(), tex);
+	}
+
+	{
+		TextureResource*	tex = new TextureResource("smiley");
+		TextureAttr			attr;
+		attr.m_warpSMode = GL_CLAMP_TO_BORDER;
+		attr.m_warpTMode = GL_CLAMP_TO_BORDER;
+		attr.m_minFilter = GL_LINEAR_MIPMAP_LINEAR;
+		attr.m_magFilter = GL_LINEAR;
+		attr.m_internalFormat = GL_RGB;
+		attr.m_fileFormat = GL_RGBA;
+		tex->SetTextureAttributes(attr);
+		tex->SetRelativePath("awesomeface.png");
+		LoadTexture(tex);
+		RegisterTexture(tex->Name(), tex);
+	}
+}
+
