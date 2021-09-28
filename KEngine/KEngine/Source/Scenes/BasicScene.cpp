@@ -36,9 +36,6 @@ IScene* BasicScene::Clone()
 	return clone;
 }
 
-unsigned int g_textureContainer;
-unsigned int g_textureFace;
-
 //----------------------------------------------------------
 void	BasicScene::BuildScene()
 {

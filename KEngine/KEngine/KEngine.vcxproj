@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Camera.cpp" />
     <ClCompile Include="Source\Game.cpp" />
     <ClCompile Include="Source\GLShader.cpp" />
     <ClCompile Include="Source\IScene.cpp" />
@@ -35,6 +36,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\External\include\stb_image.h" />
+    <ClInclude Include="Source\Camera.h" />
     <ClInclude Include="Source\Game.h" />
     <ClInclude Include="Source\GLShader.h" />
     <ClInclude Include="Source\IScene.h" />

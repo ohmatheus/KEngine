@@ -63,6 +63,9 @@
     <ClCompile Include="Source\TextureResource.cpp">
       <Filter>Source Files\Resources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Game.h">
@@ -109,6 +112,9 @@
     </ClInclude>
     <ClInclude Include="Source\TextureResource.h">
       <Filter>Source Files\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Camera.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
