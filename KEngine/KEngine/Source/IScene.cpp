@@ -10,8 +10,7 @@ IScene::IScene(Game* game)
 
 //----------------------------------------------------------
 IScene::~IScene()
-{
-}
+{}
 
 //----------------------------------------------------------
 IScene::IScene(const IScene& other)
@@ -28,18 +27,31 @@ IScene* IScene::Clone()
 
 //----------------------------------------------------------
 void	IScene::OnKeyEvent(int key, int scancode, int action, int mods)
-{}
+{
+	m_camera.OnKeyEvent(key, scancode, action, mods);
+}
+
+//----------------------------------------------------------
+void	IScene::Update(float dt)
+{
+	m_camera.Update(dt);
+}
 
 //----------------------------------------------------------
 void	IScene::OnMouseMoved(float xpos, float ypos)
-{}
+{
+	m_camera.OnMouseMoved(xpos, ypos);
+}
 
 //----------------------------------------------------------
 void	IScene::OnMouseKeyEvent(int button, int action, int mods)
-{}
+{
+	m_camera.OnMouseKeyEvent(button, action, mods);
+}
 
 //----------------------------------------------------------
 void	IScene::OnScrollMoved(float xoffset, float yoffset)
-{}
+{
+	m_camera.OnScrollMoved(xoffset, yoffset);
+}
 
-//----------------------------------------------------------

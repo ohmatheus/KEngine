@@ -35,7 +35,7 @@ void		BasicObject::Update(float dt)
 }
 
 //----------------------------------------------------------
-void		BasicObject::Render(RenderSystem* rS, SCamera* cam)
+void		BasicObject::Render(RenderSystem* rS, Camera* cam)
 {
 	glm::mat4		modelW = ModelWorldMatrix();
 
@@ -48,8 +48,8 @@ void		BasicObject::Render(RenderSystem* rS, SCamera* cam)
 	shader->Bind();
 
 	glUniformMatrix4fv(shader->Uniform("model"), 1, GL_FALSE, glm::value_ptr(modelW));
-	glUniformMatrix4fv(shader->Uniform("view"), 1, GL_FALSE, glm::value_ptr(cam->GetView()));
-	glUniformMatrix4fv(shader->Uniform("proj"), 1, GL_FALSE, glm::value_ptr(cam->m_ProjMat));
+	glUniformMatrix4fv(shader->Uniform("view"), 1, GL_FALSE, glm::value_ptr(cam->GetViewM()));
+	glUniformMatrix4fv(shader->Uniform("proj"), 1, GL_FALSE, glm::value_ptr(cam->ProjMat()));
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, containerResource->TextureRenderId());
