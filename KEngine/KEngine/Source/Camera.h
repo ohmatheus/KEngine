@@ -47,4 +47,6 @@ private:
 
 	float			radius;
 
+	float			YRot = 0;
+
 };

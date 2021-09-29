@@ -62,6 +62,9 @@ void		Camera::OnMouseKeyEvent(int button, int action, int mods)
 void		Camera::OnScrollMoved(float xoffset, float yoffset)
 {
 	if (m_mode == LookAtCenter)
+	{
 		radius -= yoffset;
+
+	}
 }
 
