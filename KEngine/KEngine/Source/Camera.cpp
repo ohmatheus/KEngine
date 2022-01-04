@@ -35,7 +35,7 @@ void		Camera::Update(float dt)
 	static float sdf = 0;
 	sdf += dt;
 
-	m_position.x = sin(m_rotation.x) * radius;
+	m_position.x = sin(sdf) * radius;
 	m_position.z = cos(sdf) * radius;
 	m_viewProj = glm::lookAt(glm::vec3(m_position.x, m_position.y, m_position.z), m_lookAtPos, glm::vec3(0.0, 1.0, 0.0));
 }

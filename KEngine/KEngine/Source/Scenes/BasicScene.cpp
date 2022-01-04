@@ -78,7 +78,6 @@ void	BasicScene::Update(float dt)
 //----------------------------------------------------------
 void	BasicScene::Render()
 {
-
 	{
 		m_camera.SetOrthoMat(glm::ortho(-400.f, 400.0f, -300.f, 300.0f, 0.1f, 200.0f));
 		m_camera.SetProjMat(glm::perspective(glm::radians(m_camera.Fov()), (float)m_game->GetRenderWindow()->Width() / (float)m_game->GetRenderWindow()->Height(), 0.1f, 200.0f));

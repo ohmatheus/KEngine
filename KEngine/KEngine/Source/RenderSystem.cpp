@@ -109,31 +109,11 @@ void	RenderSystem::_LoadShaders()
 	{
 		GLShader* shader = new GLShader();
 
-		const char* vertexShader =
-			"#version 410 core												\n"
-			"layout(location = 0) in vec3 aPos;								\n"
-			"uniform mat4 viewProj;											\n"
-			"uniform mat4 model;											\n"
-			"uniform mat4 view;												\n"
-			"uniform mat4 proj;												\n"
-			"void main()													\n"
-			"{																\n"
-			"	gl_Position = proj * view * model * vec4(aPos, 1.0f);		\n"
-			"}																\n"
-			;
+		std::string vertexShader = ReadFromFile(ShaderPath("DefaultShader.vshader"));
+		std::string fragShader = ReadFromFile(ShaderPath("DefaultShader.fshader"));
 
-		const char* fragShader =
-			"#version 410 core												\n"
-			"out vec4		FragColor;										\n"
-			"uniform vec4	uColor;											\n"
-			"void main()													\n"
-			"{																\n"
-			"	FragColor = uColor;											\n"
-			"}																\n"
-			;
-
-		shader->LoadShader(GLShader::VERTEX_SHADER, vertexShader);
-		shader->LoadShader(GLShader::FRAGMENT_SHADER, fragShader);
+		shader->LoadShader(GLShader::VERTEX_SHADER, vertexShader.c_str());
+		shader->LoadShader(GLShader::FRAGMENT_SHADER, fragShader.c_str());
 		shader->CreateAndLink();
 		shader->Bind();
 		{
@@ -154,46 +134,11 @@ void	RenderSystem::_LoadShaders()
 	{
 		GLShader* shader = new GLShader();
 
-		const char* vertexShader =
-			"#version 410 core												\n"
-			"layout(location = 0) in vec3 aPos;								\n"
-			"layout(location = 1) in vec3 aColor;							\n"
-			"layout(location = 2) in vec2 aTexCoord;						\n"
-			"\n"
-			"uniform mat4 model;											\n"
-			"uniform mat4 view;												\n"
-			"uniform mat4 proj;												\n"
-			"\n"
-			"out vec3 ourColor;												\n"
-			"out vec2 TexCoord;												\n"
-			"\n"
-			"void main()													\n"
-			"{																\n"
-			"	gl_Position = proj * view * model * vec4(aPos, 1.0f);		\n"
-			"	ourColor = aColor;											\n"
-			"	TexCoord = aTexCoord;										\n"
-			"}																\n"
-			;
+		std::string vertexShader = ReadFromFile(ShaderPath("TexturedMeshShader_Colored.vshader"));
+		std::string fragShader = ReadFromFile(ShaderPath("TexturedMeshShader_Colored.fshader"));
 
-		const char* fragShader =
-			"#version 410 core												\n"
-			"\n"
-			"in vec3		ourColor;										\n"
-			"in vec2		TexCoord;										\n"
-			"\n"
-			"out vec4		FragColor;										\n"
-			"\n"
-			"uniform sampler2D	texture1;									\n"
-			"uniform sampler2D	texture2;									\n"
-			"\n"
-			"void main()													\n"
-			"{																\n"
-			"	FragColor = mix(texture(texture1, TexCoord), texture(texture2, TexCoord), 0.2) * vec4(ourColor, 1.0);	\n"
-			"}																\n"
-			;
-
-		shader->LoadShader(GLShader::VERTEX_SHADER, vertexShader);
-		shader->LoadShader(GLShader::FRAGMENT_SHADER, fragShader);
+		shader->LoadShader(GLShader::VERTEX_SHADER, vertexShader.c_str());
+		shader->LoadShader(GLShader::FRAGMENT_SHADER, fragShader.c_str());
 		shader->CreateAndLink();
 		shader->Bind();
 		{
@@ -214,43 +159,11 @@ void	RenderSystem::_LoadShaders()
 	{
 		GLShader* shader = new GLShader();
 
-		const char* vertexShader =
-			"#version 410 core												\n"
-			"layout(location = 0) in vec3 aPos;								\n"
-			"layout(location = 1) in vec2 aTexCoord;						\n"
-			"\n"
-			"uniform mat4 model;											\n"
-			"uniform mat4 view;												\n"
-			"uniform mat4 proj;												\n"
-			"\n"
-			"out vec3 ourColor;												\n"
-			"out vec2 TexCoord;												\n"
-			"\n"
-			"void main()													\n"
-			"{																\n"
-			"	gl_Position = proj * view * model * vec4(aPos, 1.0f);		\n"
-			"	TexCoord = aTexCoord;										\n"
-			"}																\n"
-			;
+		std::string vertexShader = ReadFromFile(ShaderPath("TexturedMeshShader.vshader"));
+		std::string fragShader = ReadFromFile(ShaderPath("TexturedMeshShader.fshader"));
 
-		const char* fragShader =
-			"#version 410 core												\n"
-			"\n"
-			"in vec2		TexCoord;										\n"
-			"\n"
-			"out vec4		FragColor;										\n"
-			"\n"
-			"uniform sampler2D	texture1;									\n"
-			"uniform sampler2D	texture2;									\n"
-			"\n"
-			"void main()													\n"
-			"{																\n"
-			"	FragColor = mix(texture(texture1, TexCoord), texture(texture2, TexCoord), 0.2);	\n"
-			"}																\n"
-			;
-
-		shader->LoadShader(GLShader::VERTEX_SHADER, vertexShader);
-		shader->LoadShader(GLShader::FRAGMENT_SHADER, fragShader);
+		shader->LoadShader(GLShader::VERTEX_SHADER, vertexShader.c_str());
+		shader->LoadShader(GLShader::FRAGMENT_SHADER, fragShader.c_str());
 		shader->CreateAndLink();
 		shader->Bind();
 		{
