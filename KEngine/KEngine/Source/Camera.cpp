@@ -15,7 +15,7 @@ Camera::Camera()
 
 	m_lookAtPos = glm::vec3(0.0, 0.0, 0.0);
 
-	m_phi = -90.f * PI / 180.f;
+	m_phi = 90.f * PI / 180.f;
 	m_theta = 0.f;
 
 	m_radius = 5.f;

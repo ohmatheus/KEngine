@@ -21,5 +21,8 @@ public:
 	virtual void		OnScrollMoved(float xoffset, float yoffset);
 
 private:
-	std::vector<IObject*> m_Objects;
+	std::vector<IObject*>	m_Objects;
+
+	IObject*				m_lightObject;
+	IObject*				m_lightCastedObject;
 };
