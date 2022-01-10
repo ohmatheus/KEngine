@@ -46,14 +46,14 @@ void	BasicScene::BuildScene()
 		m_Objects.push_back(obj);
 	}
 
-	{
+	/*{
 		BasicObject* obj = new BasicObject();
 		obj->SetShaderName("TexturedMeshShader");
 		obj->SetMeshName("TexturedCube");
 		obj->Position().x = 2.f;
 		obj->Rotation().y = 40.f;
 		m_Objects.push_back(obj);
-	}
+	}*/
 
 	for (int i = 0; i < m_Objects.size(); i++)
 		m_Objects[i]->OnSceneBuild();

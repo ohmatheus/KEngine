@@ -16,7 +16,6 @@ public:
 
 	float			Fov() { return m_fov; }
 	glm::vec3&		Position() { return m_position; }
-	glm::vec3&		Rotation() { return m_rotation; }
 
 	void			SetViewProj(const glm::mat4& m) { m_viewProj = m; }
 	glm::mat4		ViewProj() { return m_viewProj; }
@@ -33,20 +32,33 @@ public:
 	void			OnMouseKeyEvent(int button, int action, int mods);
 	void			OnScrollMoved(float xoffset, float yoffset);
 
+	void			Pan(float pan_factorX, float pan_factorY);
+	void			Rotate(glm::vec3 rotation_center, float angle_X_inc, float angle_Y_inc);
+
+	void			RotatePhi(const float radians);
+	void			RotateTheta(const float radians);
+	void			Zoom(const float by);
+	glm::vec3		GetOrbitPosition() const;
+
 private:
 	ECamMode		m_mode;
 	float			m_fov;
+
 	glm::vec3		m_position;
-	glm::vec3		m_rotation;
-	glm::vec3		m_lookAtPos;
+	glm::vec3		m_lookAtPos; // center
+	glm::vec3		m_up;
+
+	glm::vec3		m_deltaRotation;
 
 	glm::mat4		m_viewProj;
 	glm::mat4		m_orthoMat;
 	glm::mat4		m_projMat;
 
+	float			m_radius;
+	float			m_minRadius;
+	float			m_phi; // azimuth
+	float			m_theta; // polar
 
-	float			radius;
-
-	float			YRot = 0;
+	bool			lookAtMove;
 
 };

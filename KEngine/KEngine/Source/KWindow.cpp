@@ -25,7 +25,7 @@ namespace
 	void onMouseMoved(GLFWwindow* window, double xpos, double ypos)
 	{
 		KWindow* gameWindow = (KWindow*)glfwGetWindowUserPointer(window);
-		gameWindow->GetGame()->OnMouseMoved((float)xpos, (float)ypos);
+		gameWindow->OnMouseMoved((float)xpos, (float)ypos);
 	}
 
 	//----------------------------------------------------------
@@ -168,6 +168,14 @@ int			KWindow::Width()
 int			KWindow::Height()
 {
 	return localHeight;
+}
+
+//----------------------------------------------------------
+void		KWindow::OnMouseMoved(float xpos, float ypos)
+{
+	GetGame()->OnMouseMoved(m_cursorPos.x- xpos, m_cursorPos.y - ypos);
+	m_cursorPos.x = xpos;
+	m_cursorPos.y = ypos;
 }
 
 //----------------------------------------------------------

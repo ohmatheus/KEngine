@@ -129,9 +129,9 @@ void	Game::OnKeyEvent(int key, int scancode, int action, int mods)
 }
 
 //----------------------------------------------------------
-void	Game::OnMouseMoved(float xpos, float ypos)
+void	Game::OnMouseMoved(float deltaX, float deltay)
 {
-	m_currentScene->OnMouseMoved(xpos, ypos);
+	m_currentScene->OnMouseMoved(deltaX, deltay);
 }
 
 //----------------------------------------------------------

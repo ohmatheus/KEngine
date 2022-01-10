@@ -38,9 +38,9 @@ void	IScene::Update(float dt)
 }
 
 //----------------------------------------------------------
-void	IScene::OnMouseMoved(float xpos, float ypos)
+void	IScene::OnMouseMoved(float deltaX, float deltaY)
 {
-	m_camera.OnMouseMoved(xpos, ypos);
+	m_camera.OnMouseMoved(deltaX, deltaY);
 }
 
 //----------------------------------------------------------
