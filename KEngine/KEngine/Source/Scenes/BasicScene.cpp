@@ -98,6 +98,7 @@ void	BasicScene::Update(float dt)
 void	BasicScene::Render()
 {
 	RenderSystem* rS = m_game->GetRenderSystem();
+	glm::vec3	lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
 
 	{
 		m_camera.SetOrthoMat(glm::ortho(-400.f, 400.0f, -300.f, 300.0f, 0.1f, 200.0f));
@@ -119,6 +120,7 @@ void	BasicScene::Render()
 		glUniformMatrix4fv(shader->Uniform("model"), 1, GL_FALSE, glm::value_ptr(modelW));
 		glUniformMatrix4fv(shader->Uniform("view"), 1, GL_FALSE, glm::value_ptr(m_camera.GetViewM()));
 		glUniformMatrix4fv(shader->Uniform("proj"), 1, GL_FALSE, glm::value_ptr(m_camera.ProjMat()));
+		glUniform3f(shader->Uniform("lightColor"), lightColor.x, lightColor.y, lightColor.z);
 
 		glBindVertexArray(mesh->VAO());
 
@@ -131,10 +133,11 @@ void	BasicScene::Render()
 
 	// render lightCastedObject
 	{
-		glm::mat4		modelW = m_lightCastedObject->ModelWorldMatrix();
-
-		GLShader* shader = rS->GetShader(m_lightCastedObject->ShaderName());
-		MeshData* mesh = rS->GetMesh(m_lightCastedObject->MeshName());
+		glm::mat4			modelW = m_lightCastedObject->ModelWorldMatrix();
+		GLShader*			shader = rS->GetShader(m_lightCastedObject->ShaderName());
+		MeshData*			mesh = rS->GetMesh(m_lightCastedObject->MeshName());
+		TextureResource*	container2tex = rS->GetTexture("container2"); // diffuseMap
+		TextureResource*	container2tex_specular = rS->GetTexture("container2_specularMap"); // specularMap
 
 		shader->Bind();
 
@@ -142,9 +145,24 @@ void	BasicScene::Render()
 		glUniformMatrix4fv(shader->Uniform("view"), 1, GL_FALSE, glm::value_ptr(m_camera.GetViewM()));
 		glUniformMatrix4fv(shader->Uniform("proj"), 1, GL_FALSE, glm::value_ptr(m_camera.ProjMat()));
 
-		glUniform3f(shader->Uniform("objectColor"), 1.0f, 0.5f, 0.31f);
-		glUniform3f(shader->Uniform("lightColor"), 1.0f, 1.0f, 1.0f);
-		glUniform3f(shader->Uniform("lightPos"), m_lightObject->Position().x, m_lightObject->Position().y, m_lightObject->Position().z);
+		glUniform3f(shader->Uniform("viewPos"), m_camera.Position().x, m_camera.Position().y, m_camera.Position().z);
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, container2tex->TextureRenderId());
+		glUniform1i(glGetUniformLocation(shader->ProgramID(), "material.diffuse"), 0);
+		
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, container2tex_specular->TextureRenderId());
+		glUniform1i(glGetUniformLocation(shader->ProgramID(), "material.specular"), 1);
+
+		glUniform1f(shader->Uniform("material.shininess"), 32.f);
+
+		glUniform3f(shader->Uniform("light.position"), m_lightObject->Position().x, m_lightObject->Position().y, m_lightObject->Position().z);
+		glUniform3f(shader->Uniform("light.ambient"), 0.2f, 0.2f, 0.2f);
+		glUniform3f(shader->Uniform("light.diffuse"), 0.5f, 0.5f, 0.5f);
+		glUniform3f(shader->Uniform("light.specular"), 1.0f, 1.0f, 1.0f);
+
+
 
 		glBindVertexArray(mesh->VAO());
 
