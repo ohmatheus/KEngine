@@ -3,6 +3,11 @@
 #include "IScene.h"
 
 class IObject;
+class BasicObject;
+
+class DirectionalLight;
+class PointLight;
+class SpotLight;
 
 class BasicScene : public IScene
 {
@@ -18,11 +23,18 @@ public:
 	virtual void		Update(float dt);
 	virtual void		Render();
 
+	void				CreateLights();
+
 	virtual void		OnScrollMoved(float xoffset, float yoffset);
 
 private:
-	std::vector<IObject*>	m_Objects;
+	std::vector<IObject*>		m_Objects;
+	std::vector<BasicObject*>	m_lightCastedObjects;
 
-	IObject*				m_lightObject;
-	IObject*				m_lightCastedObject;
+	DirectionalLight*			m_dirLight;
+	std::vector<PointLight*>	m_pointLights;
+	std::vector<SpotLight*>		m_spotLights;
+
+	//IObject*					m_lightObject;
+	IObject*					m_lightCastedObject;
 };

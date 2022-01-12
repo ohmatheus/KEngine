@@ -16,6 +16,7 @@ public:
 
 	float			Fov() { return m_fov; }
 	glm::vec3&		Position() { return m_position; }
+	glm::vec3		Forward();
 
 	void			SetViewProj(const glm::mat4& m) { m_viewProj = m; }
 	glm::mat4		ViewProj() { return m_viewProj; }

@@ -69,6 +69,9 @@
     <ClCompile Include="Source\Objects\TexturedCube.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Objects\Lights.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Game.h">
@@ -120,6 +123,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Objects\TexturedCube.h">
+      <Filter>Source Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Objects\Lights.h">
       <Filter>Source Files\Objects</Filter>
     </ClInclude>
   </ItemGroup>

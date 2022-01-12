@@ -29,6 +29,7 @@
     <ClCompile Include="Source\MeshData.cpp" />
     <ClCompile Include="Source\Objects\BasicObject.cpp" />
     <ClCompile Include="Source\Objects\IObject.cpp" />
+    <ClCompile Include="Source\Objects\Lights.cpp" />
     <ClCompile Include="Source\Objects\TexturedCube.cpp" />
     <ClCompile Include="Source\RenderSystem.cpp" />
     <ClCompile Include="Source\Scenes\BasicScene.cpp" />
@@ -46,6 +47,7 @@
     <ClInclude Include="Source\MeshData.h" />
     <ClInclude Include="Source\Objects\BasicObject.h" />
     <ClInclude Include="Source\Objects\IObject.h" />
+    <ClInclude Include="Source\Objects\Lights.h" />
     <ClInclude Include="Source\Objects\TexturedCube.h" />
     <ClInclude Include="Source\RenderSystem.h" />
     <ClInclude Include="Source\Scenes\BasicScene.h" />

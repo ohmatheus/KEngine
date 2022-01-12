@@ -30,6 +30,12 @@ Camera::~Camera()
 {}
 
 //----------------------------------------------------------
+glm::vec3		Camera::Forward()
+{
+	return m_lookAtPos - m_position;
+}
+
+//----------------------------------------------------------
 glm::mat4		Camera::GetViewM()
 {
 	return m_viewProj;

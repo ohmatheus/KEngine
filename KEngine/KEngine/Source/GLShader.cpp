@@ -129,6 +129,7 @@ uint GLShader::Attribute(std::string const& attribute)
 void GLShader::AddUniform(std::string const& uniform)
 {
 	uint uniformLocation = glGetUniformLocation(m_ProgramID, uniform.c_str());
+	assert(uniformLocation != -1);
 	GL_CHECK_ERRORS
 	m_UniformsLocation[uniform] = uniformLocation;
 }

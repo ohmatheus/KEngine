@@ -224,10 +224,23 @@ void	RenderSystem::_LoadShaders()
 			//shader->AddUniform("material.specular");
 			shader->AddUniform("material.shininess");
 
-			shader->AddUniform("light.position");
-			shader->AddUniform("light.ambient");
-			shader->AddUniform("light.diffuse");
-			shader->AddUniform("light.specular");
+			shader->AddUniform("dirLight.direction");
+			shader->AddUniform("dirLight.ambient");
+			shader->AddUniform("dirLight.diffuse");
+			shader->AddUniform("dirLight.specular");
+
+
+			for (int i = 0; i < 4; i++)
+			{
+				std::string number = std::to_string(i);
+				shader->AddUniform(("pointLights[" + number + "].position").c_str());
+				shader->AddUniform(("pointLights[" + number + "].ambient").c_str());
+				shader->AddUniform(("pointLights[" + number + "].diffuse").c_str());
+				shader->AddUniform(("pointLights[" + number + "].specular").c_str());
+				shader->AddUniform(("pointLights[" + number + "].constant").c_str());
+				shader->AddUniform(("pointLights[" + number + "].linear").c_str());
+				shader->AddUniform(("pointLights[" + number + "].quadratic").c_str());
+			}
 
 		}
 		shader->Unbind();
