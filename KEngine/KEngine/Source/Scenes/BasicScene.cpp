@@ -18,7 +18,6 @@
 BasicScene::BasicScene(Game* game)
 :	IScene(game)
 {
-	//m_lightObject = nullptr;
 }
 
 //----------------------------------------------------------
@@ -32,6 +31,9 @@ BasicScene::~BasicScene()
 
 	for (int i = 0; i < m_pointLights.size(); i++)
 		delete m_pointLights[i];
+
+	for (int i = 0; i < m_spotLights.size(); i++)
+		delete m_spotLights[i];
 	
 	delete m_dirLight;
 }
@@ -56,17 +58,8 @@ void	BasicScene::BuildScene()
 		obj->SetMeshName("TexturedCube");
 		obj->SetShaderName("TexturedMeshShader");
 		obj->Position() = glm::vec3(-3.f, 0.f, 0.f);
-		// set manually texture
 		m_Objects.push_back(obj);
 	}
-
-	//{
-	//	m_lightObject = new BasicObject();
-	//	m_lightObject->SetMeshName("SimpleCube");
-	//	m_lightObject->SetShaderName("LightObject");
-	//	m_lightObject->Scale() = glm::vec3(0.2f);
-	//	m_lightObject->Position() = glm::vec3(1.2f, 1.0f, -2.0f);
-	//}
 
 	glm::vec3 cubePositions[] =
 	{
@@ -111,6 +104,8 @@ void	BasicScene::BuildScene()
 	// to remove
 	for (int i = 0; i < m_pointLights.size(); i++)
 		m_pointLights[i]->OnSceneStart();
+	for (int i = 0; i < m_spotLights.size(); i++)
+		m_spotLights[i]->OnSceneStart();
 }
 
 //----------------------------------------------------------
@@ -135,6 +130,9 @@ void	BasicScene::Update(float dt)
 
 	for (int i = 0; i < m_pointLights.size(); i++)
 		m_pointLights[i]->Update(dt);
+
+	for (int i = 0; i < m_spotLights.size(); i++)
+		m_spotLights[i]->Update(dt);
 }
 
 //----------------------------------------------------------
@@ -153,6 +151,9 @@ void	BasicScene::Render()
 
 	for (int i = 0; i < m_pointLights.size(); i++)
 		m_pointLights[i]->Render(rS, &m_camera);
+
+	for (int i = 0; i < m_spotLights.size(); i++)
+		m_spotLights[i]->Render(rS, &m_camera);
 
 	// render lightCastedObject
 	{
@@ -183,11 +184,6 @@ void	BasicScene::Render()
 
 			glUniform1f(shader->Uniform("material.shininess"), 32.f);
 
-			//glUniform3f(shader->Uniform("light.direction"), -0.2f, -1.0f, -0.3f);
-			//glUniform3f(shader->Uniform("light.position"), m_lightObject->Position().x, m_lightObject->Position().y, m_lightObject->Position().z);
-			//glUniform3f(shader->Uniform("light.direction"), m_lightObject->Forward().x, m_lightObject->Forward().y, m_lightObject->Forward().z);
-
-
 			glUniform3f(shader->Uniform("dirLight.direction"), m_dirLight->m_direction.x, m_dirLight->m_direction.y, m_dirLight->m_direction.z);
 			glUniform3f(shader->Uniform("dirLight.ambient"), m_dirLight->m_ambient.x, m_dirLight->m_ambient.y, m_dirLight->m_ambient.z);
 			glUniform3f(shader->Uniform("dirLight.diffuse"), m_dirLight->m_diffuse.x, m_dirLight->m_diffuse.y, m_dirLight->m_diffuse.z);
@@ -205,16 +201,20 @@ void	BasicScene::Render()
 				glUniform1f(shader->Uniform(("pointLights[" + number + "].quadratic").c_str()), m_pointLights[i]->m_quadratic);
 			}
 
-			//glUniform3f(shader->Uniform("light.position"), m_camera.Position().x, m_camera.Position().y, m_camera.Position().z);
-			//glUniform3f(shader->Uniform("light.direction"), m_camera.Forward().x, m_camera.Forward().y, m_camera.Forward().z);
-			//glUniform1f(shader->Uniform("light.cutoff"), glm::cos(glm::radians(12.5f)));
-			//glUniform1f(shader->Uniform("light.outerCutoff"), glm::cos(glm::radians(17.5f)));
-			//glUniform3f(shader->Uniform("light.ambient"), 0.2f, 0.2f, 0.2f);
-			//glUniform3f(shader->Uniform("light.diffuse"), 0.5f, 0.5f, 0.5f);
-			//glUniform3f(shader->Uniform("light.specular"), 1.0f, 1.0f, 1.0f);
-			//glUniform1f(shader->Uniform("light.constant"), 1.0f);
-			//glUniform1f(shader->Uniform("light.linear"), 0.09f);
-			//glUniform1f(shader->Uniform("light.quadratic"), 0.032f);
+			for (int i = 0; i < m_spotLights.size(); i++)
+			{
+				std::string number = std::to_string(i);
+				glUniform3f(shader->Uniform(("spotLights[" + number + "].position").c_str()), m_spotLights[i]->Position().x, m_spotLights[i]->Position().y, m_spotLights[i]->Position().z);
+				glUniform3f(shader->Uniform(("spotLights[" + number + "].direction").c_str()), m_spotLights[i]->m_direction.x, m_spotLights[i]->m_direction.y, m_spotLights[i]->m_direction.z);
+				glUniform3f(shader->Uniform(("spotLights[" + number + "].ambient").c_str()), m_spotLights[i]->m_ambient.x, m_spotLights[i]->m_ambient.y, m_spotLights[i]->m_ambient.z);
+				glUniform3f(shader->Uniform(("spotLights[" + number + "].diffuse").c_str()), m_spotLights[i]->m_diffuse.x, m_spotLights[i]->m_diffuse.y, m_spotLights[i]->m_diffuse.z);
+				glUniform3f(shader->Uniform(("spotLights[" + number + "].specular").c_str()), m_spotLights[i]->m_specular.x, m_spotLights[i]->m_specular.y, m_spotLights[i]->m_specular.z);
+				glUniform1f(shader->Uniform(("spotLights[" + number + "].constant").c_str()), m_spotLights[i]->m_constant);
+				glUniform1f(shader->Uniform(("spotLights[" + number + "].linear").c_str()), m_spotLights[i]->m_linear);
+				glUniform1f(shader->Uniform(("spotLights[" + number + "].quadratic").c_str()), m_spotLights[i]->m_quadratic);
+				glUniform1f(shader->Uniform(("spotLights[" + number + "].cutoff").c_str()), m_spotLights[i]->m_cutoff);
+				glUniform1f(shader->Uniform(("spotLights[" + number + "].outerCutoff").c_str()), m_spotLights[i]->m_outerCutoff);
+			}
 
 			glBindVertexArray(mesh->VAO());
 
@@ -270,8 +270,26 @@ void	BasicScene::CreateLights()
 		m_pointLights.push_back(light);
 	}
 
-	// spots
 
+	for (int i = 0; i < 4; i++)
+	{
+		SpotLight* light = new SpotLight();
+
+		float angle = 2 * PI * (i + 1) / 4.f;
+
+		light->m_ambient = pointLightColors[i] * 0.2f; // glm::vec3(0.2f, 0.2f, 0.2f);
+		light->m_diffuse = pointLightColors[i] * 0.5f; // glm::vec3(0.5f, 0.5f, 0.5f);
+		light->m_specular = pointLightColors[i]; // glm::vec3(1.0f, 1.0f, 1.0f);
+		light->Position() = glm::vec3(cos(angle), -3.f, sin(angle));
+		light->m_direction = glm::vec3(0.f, -1.f, 0.f);
+		light->m_constant = 1.f;
+		light->m_linear = 0.09f;
+		light->m_quadratic = 0.032f;
+		light->m_cutoff = glm::cos(glm::radians(12.5f));
+		light->m_outerCutoff = glm::cos(glm::radians(17.5f));
+
+		m_spotLights.push_back(light);
+	}
 }
 
 //----------------------------------------------------------

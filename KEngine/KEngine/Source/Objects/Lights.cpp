@@ -65,3 +65,26 @@ void	PointLight::Update(float dt)
 	Position() += m_initialPosition;
 }
 
+//----------------------------------------------------------
+void	SpotLight::OnSceneStart()
+{
+	ILight::OnSceneStart();
+	m_initialPosition = m_Position;
+}
+
+//----------------------------------------------------------
+void	SpotLight::Update(float dt)
+{
+	static	float angle = 0.f;
+	const	float radius = 2.5f;
+
+	const float speed = 0.3f;
+
+	angle += dt * speed;
+
+	Position().x = cosf(angle) * radius;
+	Position().y = 0.f;
+	Position().z = sinf(angle) * radius;
+
+	Position() += m_initialPosition;
+}

@@ -17,15 +17,15 @@ public:
 	virtual ~BasicScene();
 	BasicScene(BasicScene const&);
 
-	virtual IScene*		Clone();
-	virtual void		BuildScene();
-	virtual void		OnSceneStart();
-	virtual void		Update(float dt);
-	virtual void		Render();
+	virtual IScene*				Clone();
+	virtual void				BuildScene();
+	virtual void				OnSceneStart();
+	virtual void				Update(float dt);
+	virtual void				Render();
 
-	void				CreateLights();
+	void						CreateLights();
 
-	virtual void		OnScrollMoved(float xoffset, float yoffset);
+	virtual void				OnScrollMoved(float xoffset, float yoffset);
 
 private:
 	std::vector<IObject*>		m_Objects;
@@ -34,7 +34,4 @@ private:
 	DirectionalLight*			m_dirLight;
 	std::vector<PointLight*>	m_pointLights;
 	std::vector<SpotLight*>		m_spotLights;
-
-	//IObject*					m_lightObject;
-	IObject*					m_lightCastedObject;
 };

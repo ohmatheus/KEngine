@@ -242,6 +242,21 @@ void	RenderSystem::_LoadShaders()
 				shader->AddUniform(("pointLights[" + number + "].quadratic").c_str());
 			}
 
+			for (int i = 0; i < 4; i++)
+			{
+				std::string number = std::to_string(i);
+				shader->AddUniform(("spotLights[" + number + "].position").c_str());
+				shader->AddUniform(("spotLights[" + number + "].direction").c_str());
+				shader->AddUniform(("spotLights[" + number + "].ambient").c_str());
+				shader->AddUniform(("spotLights[" + number + "].diffuse").c_str());
+				shader->AddUniform(("spotLights[" + number + "].specular").c_str());
+				shader->AddUniform(("spotLights[" + number + "].constant").c_str());
+				shader->AddUniform(("spotLights[" + number + "].linear").c_str());
+				shader->AddUniform(("spotLights[" + number + "].quadratic").c_str());
+				shader->AddUniform(("spotLights[" + number + "].cutoff").c_str());
+				shader->AddUniform(("spotLights[" + number + "].outerCutoff").c_str());
+			}
+
 		}
 		shader->Unbind();
 
@@ -560,6 +575,5 @@ void	RenderSystem::_LoadTextures()
 		LoadTexture(tex);
 		RegisterTexture(tex->Name(), tex);
 	}
-	
 }
 
