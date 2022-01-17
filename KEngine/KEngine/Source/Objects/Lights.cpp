@@ -59,7 +59,7 @@ void	PointLight::Update(float dt)
 	angle += dt * speed;
 
 	Position().x = cosf(angle) * radius;
-	Position().y = cosf(angle);
+	Position().y = 0;
 	Position().z = sinf(angle) * radius;
 
 	Position() += m_initialPosition;

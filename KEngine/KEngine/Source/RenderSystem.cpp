@@ -293,6 +293,69 @@ void	RenderSystem::_LoadShaders()
 		shader->m_name = "SimpleLightCastedObject";
 		RegisterShader("SimpleLightCastedObject", shader);
 	}
+
+	// SimpleModel
+	{
+		GLShader* shader = new GLShader();
+
+		std::string vertexShader = ReadFromFile(ShaderPath("SimpleModel.vshader"));
+		std::string fragShader = ReadFromFile(ShaderPath("SimpleModel.fshader"));
+
+		shader->LoadShader(GLShader::VERTEX_SHADER, vertexShader.c_str());
+		shader->LoadShader(GLShader::FRAGMENT_SHADER, fragShader.c_str());
+		shader->CreateAndLink();
+		shader->Bind();
+		{
+			shader->AddUniform("model");
+			shader->AddUniform("view");
+			shader->AddUniform("proj");
+			shader->AddUniform("viewPos");
+
+			//shader->AddUniform("material.diffuse");
+			//shader->AddUniform("material.specular");
+			shader->AddUniform("material.shininess");
+
+			shader->AddUniform("dirLight.direction");
+			shader->AddUniform("dirLight.ambient");
+			shader->AddUniform("dirLight.diffuse");
+			shader->AddUniform("dirLight.specular");
+
+
+			for (int i = 0; i < 4; i++)
+			{
+				std::string number = std::to_string(i);
+				shader->AddUniform(("pointLights[" + number + "].position").c_str());
+				shader->AddUniform(("pointLights[" + number + "].ambient").c_str());
+				shader->AddUniform(("pointLights[" + number + "].diffuse").c_str());
+				shader->AddUniform(("pointLights[" + number + "].specular").c_str());
+				shader->AddUniform(("pointLights[" + number + "].constant").c_str());
+				shader->AddUniform(("pointLights[" + number + "].linear").c_str());
+				shader->AddUniform(("pointLights[" + number + "].quadratic").c_str());
+			}
+			
+			//for (int i = 0; i < 4; i++)
+			//{
+			//	std::string number = std::to_string(i);
+			//	shader->AddUniform(("spotLights[" + number + "].position").c_str());
+			//	shader->AddUniform(("spotLights[" + number + "].direction").c_str());
+			//	shader->AddUniform(("spotLights[" + number + "].ambient").c_str());
+			//	shader->AddUniform(("spotLights[" + number + "].diffuse").c_str());
+			//	shader->AddUniform(("spotLights[" + number + "].specular").c_str());
+			//	shader->AddUniform(("spotLights[" + number + "].constant").c_str());
+			//	shader->AddUniform(("spotLights[" + number + "].linear").c_str());
+			//	shader->AddUniform(("spotLights[" + number + "].quadratic").c_str());
+			//	shader->AddUniform(("spotLights[" + number + "].cutoff").c_str());
+			//	shader->AddUniform(("spotLights[" + number + "].outerCutoff").c_str());
+			//}
+
+		}
+		shader->Unbind();
+
+		GL_CHECK_ERRORS
+
+		shader->m_name = "SimpleModel";
+		RegisterShader("SimpleModel", shader);
+	}
 }
 
 //----------------------------------------------------------
