@@ -7,7 +7,7 @@ class Camera final
 public:
 	enum ECamMode
 	{
-		LookAtCenter = 0,
+		Orbit = 0,
 		Free3D
 	};
 
@@ -41,11 +41,16 @@ public:
 	void			Zoom(const float by);
 	glm::vec3		GetOrbitPosition() const;
 
+	void			SwitchMode();
+	void			ResetCamera();
+
 private:
 	ECamMode		m_mode;
 	float			m_fov;
 
 	glm::vec3		m_position;
+	glm::vec3		m_direction;
+					
 	glm::vec3		m_lookAtPos; // center
 	glm::vec3		m_up;
 
@@ -61,5 +66,8 @@ private:
 	float			m_theta; // polar
 
 	bool			lookAtMove;
-
+	bool			m_goForw;
+	bool			m_goBack;
+	bool			m_goRight;
+	bool			m_goLeft;
 };

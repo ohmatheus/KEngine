@@ -26,6 +26,7 @@ public:
 	void						CreateLights();
 
 	virtual void				OnScrollMoved(float xoffset, float yoffset);
+	virtual void				OnKeyEvent(int key, int scancode, int action, int mods);
 
 private:
 	std::vector<IObject*>		m_Objects;

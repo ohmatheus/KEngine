@@ -26,6 +26,8 @@ public:
 	void				SetGame(Game* game) { m_game = game; }
 	Game*				GetGame() { return m_game; }
 
+	GLFWwindow*			Window() { return m_window; }
+
 private:
 	Game*				m_game;
 	GLFWwindow*			m_window;

@@ -353,3 +353,15 @@ void	BasicScene::OnScrollMoved(float xoffset, float yoffset)
 {
 	super::OnScrollMoved(xoffset, yoffset);
 }
+
+//----------------------------------------------------------
+void	BasicScene::OnKeyEvent(int key, int scancode, int action, int mods)
+{
+	if (key == GLFW_KEY_C && action == GLFW_PRESS)
+	{
+		m_camera.SwitchMode();
+	}
+
+	super::OnKeyEvent(key, scancode, action, mods);
+}
+
