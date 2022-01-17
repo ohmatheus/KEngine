@@ -71,7 +71,7 @@ bool	RenderSystem::RegisterTexture(std::string const& textureName, TextureResour
 }
 
 //----------------------------------------------------------
-void	RenderSystem::LoadTexture(TextureResource* tex)
+void	RenderSystem::LoadTexture(TextureResource* tex, const char* filePath)
 {
 	glGenTextures(1, &tex->TextureRenderId());
 
@@ -82,7 +82,13 @@ void	RenderSystem::LoadTexture(TextureResource* tex)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, tex->Attr().m_magFilter);
 
 	int width, height, nrChannels;
-	std::string path = ImagePath(tex->RelativePath());
+	std::string path;
+	if (filePath == nullptr)
+		path = ImagePath(tex->RelativePath());
+	else
+	{
+		path = filePath + std::string("/") + tex->RelativePath();
+	}
 	stbi_set_flip_vertically_on_load(true);
 	unsigned char* data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
 	stbi_set_flip_vertically_on_load(false);
@@ -100,6 +106,28 @@ void	RenderSystem::LoadTexture(TextureResource* tex)
 	}
 
 	stbi_image_free(data);
+}
+
+//----------------------------------------------------------
+TextureResource* RenderSystem::AddTextureResourceAndLoad(std::string const& directoryPath, std::string const& fileName, std::string const& fileType)
+{
+	if (m_TextureBank[fileName] != nullptr)
+		return m_TextureBank[fileName];
+
+	TextureResource* tex = new TextureResource(fileName);
+	TextureAttr			attr;
+	attr.m_warpSMode = GL_CLAMP_TO_BORDER;
+	attr.m_warpTMode = GL_CLAMP_TO_BORDER;
+	attr.m_minFilter = GL_LINEAR_MIPMAP_LINEAR;
+	attr.m_magFilter = GL_LINEAR;
+	attr.m_internalFormat = GL_RGB;
+	attr.m_fileFormat = GL_RGB;// GL_RGBA;
+	tex->SetTextureAttributes(attr);
+	tex->SetRelativePath(fileName + "." + fileType);
+	LoadTexture(tex, directoryPath.c_str());
+	RegisterTexture(tex->Name(), tex);
+
+	return tex;
 }
 
 //----------------------------------------------------------

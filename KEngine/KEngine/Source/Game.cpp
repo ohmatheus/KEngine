@@ -11,12 +11,15 @@
 
 #include "GLShader.h"
 
+Game* Game::m_instance = nullptr;
+
 //----------------------------------------------------------
 Game::Game(KWindow *renderWindow)
 :	m_RenderWindow(renderWindow)
 ,	m_RenderSystem(nullptr)
 {
 	assert(m_RenderWindow != nullptr);
+	m_instance = this;
 }
 
 //----------------------------------------------------------

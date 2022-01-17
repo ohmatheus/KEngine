@@ -1,0 +1,10 @@
+^D:\DOCUMENTS\PROJECTS\KENGINE_REPO\KENGINE\EXTERNAL\ASSIMP-5.0.1\TOOLS\ASSIMP_CMD\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SD:/Documents/Projects/KEngine_Repo/KEngine/External/assimp-5.0.1 -BD:/Documents/Projects/KEngine_Repo/KEngine/External/assimp-5.0.1/build --check-stamp-file D:/Documents/Projects/KEngine_Repo/KEngine/External/assimp-5.0.1/build/tools/assimp_cmd/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

@@ -48,6 +48,7 @@ void GLAPIENTRY MessageCallback(GLenum source, GLenum type, GLuint id, GLenum se
 std::string		ImagePath(const std::string& fileName);
 std::string		MeshPath(const std::string& fileName);
 std::string		ShaderPath(const std::string& fileName);
+std::string		ModelPath(const std::string& fileName);
 
 std::string		ReadFromFile(const std::string& fileName);
 

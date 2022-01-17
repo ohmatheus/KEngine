@@ -30,7 +30,8 @@ public:
 	MeshData			*GetMesh(const std::string &name) { return m_MeshBank[name]; }
 	TextureResource		*GetTexture(const std::string &name) { return m_TextureBank[name]; }
 
-	void		LoadTexture(TextureResource *tex);
+	void				LoadTexture(TextureResource *tex, const char* path = nullptr);
+	TextureResource*	AddTextureResourceAndLoad(std::string const& directoryPath, std::string const &fileName, std::string const& fileType);
 
 private:
 	void	_LoadShaders();

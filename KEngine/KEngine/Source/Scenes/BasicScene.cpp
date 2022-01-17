@@ -14,6 +14,10 @@
 
 #include "stb_image.h"
 
+#include "Model.h"
+
+Model* model = nullptr;
+
 //----------------------------------------------------------
 BasicScene::BasicScene(Game* game)
 :	IScene(game)
@@ -106,6 +110,9 @@ void	BasicScene::BuildScene()
 		m_pointLights[i]->OnSceneStart();
 	for (int i = 0; i < m_spotLights.size(); i++)
 		m_spotLights[i]->OnSceneStart();
+
+	model = new Model(ModelPath("backpack/backpack.obj").c_str());
+	int i = 0;
 }
 
 //----------------------------------------------------------
@@ -218,7 +225,7 @@ void	BasicScene::Render()
 
 			glBindVertexArray(mesh->VAO());
 
-			glBindBuffer(GL_ARRAY_BUFFER, mesh->VBO()); // is it necessary to couple that with glBindVertexArray ?
+			//glBindBuffer(GL_ARRAY_BUFFER, mesh->VBO()); // is it necessary to couple that with glBindVertexArray ?
 			glDrawArrays(mesh->Mode(), 0, mesh->VerticesNbr());
 			glBindVertexArray(0);
 			glEnableVertexAttribArray(0);

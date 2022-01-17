@@ -20,7 +20,7 @@ public:
 	uint	m_VAO;
 	uint	m_Size;		// Specifies the number of components per generic vertex attribute.
 	uint	m_Stride;	// Specifies the byte offset between consecutive generic vertex attributes.
-	uint	m_Mode;		// Specifies what kind of primitives to render.
+	uint	m_Mode;
 	uint	m_VerticeNbr;
 	float	*m_Vertices;
 };

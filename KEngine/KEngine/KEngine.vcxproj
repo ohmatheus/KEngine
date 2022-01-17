@@ -26,7 +26,9 @@
     <ClCompile Include="Source\KApplication.cpp" />
     <ClCompile Include="Source\KWindow.cpp" />
     <ClCompile Include="Source\main.cpp" />
+    <ClCompile Include="Source\Mesh.cpp" />
     <ClCompile Include="Source\MeshData.cpp" />
+    <ClCompile Include="Source\Model.cpp" />
     <ClCompile Include="Source\Objects\BasicObject.cpp" />
     <ClCompile Include="Source\Objects\IObject.cpp" />
     <ClCompile Include="Source\Objects\Lights.cpp" />
@@ -44,7 +46,9 @@
     <ClInclude Include="Source\IScene.h" />
     <ClInclude Include="Source\KApplication.h" />
     <ClInclude Include="Source\KWindow.h" />
+    <ClInclude Include="Source\Mesh.h" />
     <ClInclude Include="Source\MeshData.h" />
+    <ClInclude Include="Source\Model.h" />
     <ClInclude Include="Source\Objects\BasicObject.h" />
     <ClInclude Include="Source\Objects\IObject.h" />
     <ClInclude Include="Source\Objects\Lights.h" />
@@ -160,13 +164,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Source\;$(SolutionDir)..\External\include;$(SolutionDir)..\External\glm;$(SolutionDir)..\External\glew-2.1.0\include\GL;C:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Source\;$(SolutionDir)..\External\include;$(SolutionDir)..\External\glm;$(SolutionDir)..\External\glew-2.1.0\include\GL;C:\Program Files (x86)\Visual Leak Detector\include;$(SolutionDir)..\External\assimp-5.0.1\include;$(SolutionDir)..\External\assimp-5.0.1\build\include\assimp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\External\lib;$(SolutionDir)..\External\glew-2.1.0\lib\Release\x64;C:\Program Files (x86)\Visual Leak Detector\lib\Win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;glew32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\External\lib;$(SolutionDir)..\External\glew-2.1.0\lib\Release\x64;C:\Program Files (x86)\Visual Leak Detector\lib\Win64;$(SolutionDir)..\External\assimp-5.0.1\build\code\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;glew32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;assimp-vc142-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

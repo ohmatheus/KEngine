@@ -34,6 +34,11 @@ public:
 	KWindow*				GetRenderWindow() { return m_RenderWindow; }
 	IScene*					CurrentScene() { return m_currentScene; }
 
+	static Game* Instance()
+	{
+		return m_instance;
+	}
+
 private:
 	void					_InitRenderSystem();
 	void					_StartScene();
@@ -49,7 +54,9 @@ private:
 
 	std::vector<IScene*>	m_Scenes;
 	IScene*					m_currentScene;
-	RenderSystem			*m_RenderSystem;
-	KWindow					*m_RenderWindow;
+	RenderSystem*			m_RenderSystem;
+	KWindow*				m_RenderWindow;
+
+	static Game*			m_instance;
 };
 
