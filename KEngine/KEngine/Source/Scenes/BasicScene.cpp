@@ -262,6 +262,21 @@ void	BasicScene::Render()
 			glUniform1f(shader->Uniform(("pointLights[" + number + "].quadratic").c_str()), m_pointLights[i]->m_quadratic);
 		}
 
+		for (int i = 0; i < m_spotLights.size(); i++)
+		{
+			std::string number = std::to_string(i);
+			glUniform3f(shader->Uniform(("spotLights[" + number + "].position").c_str()), m_spotLights[i]->Position().x, m_spotLights[i]->Position().y, m_spotLights[i]->Position().z);
+			glUniform3f(shader->Uniform(("spotLights[" + number + "].direction").c_str()), m_spotLights[i]->m_direction.x, m_spotLights[i]->m_direction.y, m_spotLights[i]->m_direction.z);
+			glUniform3f(shader->Uniform(("spotLights[" + number + "].ambient").c_str()), m_spotLights[i]->m_ambient.x, m_spotLights[i]->m_ambient.y, m_spotLights[i]->m_ambient.z);
+			glUniform3f(shader->Uniform(("spotLights[" + number + "].diffuse").c_str()), m_spotLights[i]->m_diffuse.x, m_spotLights[i]->m_diffuse.y, m_spotLights[i]->m_diffuse.z);
+			glUniform3f(shader->Uniform(("spotLights[" + number + "].specular").c_str()), m_spotLights[i]->m_specular.x, m_spotLights[i]->m_specular.y, m_spotLights[i]->m_specular.z);
+			glUniform1f(shader->Uniform(("spotLights[" + number + "].constant").c_str()), m_spotLights[i]->m_constant);
+			glUniform1f(shader->Uniform(("spotLights[" + number + "].linear").c_str()), m_spotLights[i]->m_linear);
+			glUniform1f(shader->Uniform(("spotLights[" + number + "].quadratic").c_str()), m_spotLights[i]->m_quadratic);
+			glUniform1f(shader->Uniform(("spotLights[" + number + "].cutoff").c_str()), m_spotLights[i]->m_cutoff);
+			glUniform1f(shader->Uniform(("spotLights[" + number + "].outerCutoff").c_str()), m_spotLights[i]->m_outerCutoff);
+		}
+
 		model->Draw(shader);
 		shader->Unbind();
 
@@ -321,7 +336,7 @@ void	BasicScene::CreateLights()
 		light->m_ambient = pointLightColors[i] * 0.2f; // glm::vec3(0.2f, 0.2f, 0.2f);
 		light->m_diffuse = pointLightColors[i] * 0.5f; // glm::vec3(0.5f, 0.5f, 0.5f);
 		light->m_specular = pointLightColors[i]; // glm::vec3(1.0f, 1.0f, 1.0f);
-		light->Position() = glm::vec3(cos(angle), -3.f, sin(angle));
+		light->Position() = glm::vec3(cos(angle), 3.f, sin(angle));
 		light->m_direction = glm::vec3(0.f, -1.f, 0.f);
 		light->m_constant = 1.f;
 		light->m_linear = 0.09f;
