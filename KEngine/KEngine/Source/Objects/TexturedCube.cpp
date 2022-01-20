@@ -39,8 +39,8 @@ void		TexturedCube::Render(RenderSystem* rS, Camera* cam)
 {
 	glm::mat4		modelW = ModelWorldMatrix();
 
-	GLShader* shader = rS->GetShader(m_ShaderName);
-	MeshData* mesh = rS->GetMesh(m_MeshName);
+	GLShader* shader = rS->GetShader(m_shaderName);
+	MeshData* mesh = rS->GetMesh(m_meshName);
 
 	TextureResource* containerResource = rS->GetTexture("container");
 	TextureResource* smileyTex = rS->GetTexture("smiley");
@@ -59,8 +59,6 @@ void		TexturedCube::Render(RenderSystem* rS, Camera* cam)
 	glUniform1i(glGetUniformLocation(shader->ProgramID(), "texture2"), 1); // set it manually
 
 	glBindVertexArray(mesh->VAO());
-
-	//glBindBuffer(GL_ARRAY_BUFFER, mesh->VBO()); // is it necessary to couple that with glBindVertexArray ?
 	glDrawArrays(mesh->Mode(), 0, mesh->VerticesNbr());
 	glBindVertexArray(0);
 	glEnableVertexAttribArray(0);

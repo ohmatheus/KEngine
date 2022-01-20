@@ -32,13 +32,12 @@ glm::mat4		Camera::GetViewM()
 //----------------------------------------------------------
 void		Camera::Update(float dt)
 {
-	std::cout << "phi : " << m_phi << std::endl;
-	std::cout << "theta : " << m_theta << std::endl;
+	const float fakeDt = 0.016f;
 
 	if (m_mode == Orbit)
 	{
-		RotatePhi(-m_deltaRotation.x * dt);
-		RotateTheta(-m_deltaRotation.y * dt);
+		RotatePhi(-m_deltaRotation.x * fakeDt);
+		RotateTheta(-m_deltaRotation.y * fakeDt);
 
 		m_position = GetOrbitPosition();
 		m_viewProj = glm::lookAt(glm::vec3(m_position.x, m_position.y, m_position.z), m_lookAtPos, glm::vec3(0.0, 1.0, 0.0));
@@ -48,11 +47,11 @@ void		Camera::Update(float dt)
 	}
 	else if (m_mode == Free3D)
 	{
-		const float sensibilityRot = 0.33f;
-		const float sensibilityTrans = 5.f;
+		const float sensibilityRot = 0.2f;
+		const float sensibilityTrans = 7.5f;
 
-		m_phi += -m_deltaRotation.x * dt * sensibilityRot;
-		m_theta += m_deltaRotation.y * dt * sensibilityRot;
+		m_phi += -m_deltaRotation.x * fakeDt * sensibilityRot;
+		m_theta += m_deltaRotation.y * fakeDt * sensibilityRot;
 
 		if (m_theta > 89.0f * PI / 180.f)
 			m_theta = 89.0f * PI / 180.f;
@@ -65,21 +64,26 @@ void		Camera::Update(float dt)
 
 		m_direction = glm::normalize(m_direction);
 
-		m_up = glm::normalize(glm::cross(glm::vec3(1.f, 0.f, 0.f), m_direction));
+		glm::vec3 up = glm::vec3(0.f, 1.f, 0.f);
 
 		glm::vec3 right = glm::normalize(glm::cross(glm::vec3(0.f, 1.f, 0.f), m_direction));
 
 		if (m_goForw)
-			m_position += m_direction * dt * sensibilityTrans;
+			m_position += m_direction * fakeDt * sensibilityTrans;
 		if (m_goBack)
-			m_position -= m_direction * dt * sensibilityTrans;
+			m_position -= m_direction * fakeDt * sensibilityTrans;
 
 		if (m_goRight)
-			m_position -= right * dt * sensibilityTrans;
+			m_position -= right * fakeDt * sensibilityTrans;
 		if (m_goLeft)
-			m_position += right * dt * sensibilityTrans;
+			m_position += right * fakeDt * sensibilityTrans;
 
-		m_viewProj = glm::lookAt(glm::vec3(m_position.x, m_position.y, m_position.z), m_position + m_direction, glm::vec3(0.0, 1.0, 0.0));
+		if (m_goUp)
+			m_position += up * fakeDt * sensibilityTrans;
+		if (m_goDown)
+			m_position -= up * fakeDt * sensibilityTrans;
+
+		m_viewProj = glm::lookAt(glm::vec3(m_position.x, m_position.y, m_position.z), m_position + m_direction, up);
 	}
 
 	m_deltaRotation = glm::vec3(0.f);
@@ -111,7 +115,16 @@ void		Camera::OnKeyEvent(int key, int scancode, int action, int mods)
 			m_goLeft = true;
 		if (key == GLFW_KEY_A && action == GLFW_RELEASE)
 			m_goLeft = false;
-	
+
+		if (key == GLFW_KEY_E && action == GLFW_PRESS)
+			m_goUp = true;
+		if (key == GLFW_KEY_E && action == GLFW_RELEASE)
+			m_goUp = false;
+
+		if (key == GLFW_KEY_Q && action == GLFW_PRESS)
+			m_goDown = true;
+		if (key == GLFW_KEY_Q && action == GLFW_RELEASE)
+			m_goDown = false;
 	}
 }
 
@@ -129,9 +142,21 @@ void		Camera::OnMouseMoved(float deltaX, float deltaY)
 void		Camera::OnMouseKeyEvent(int button, int action, int mods)
 {
 	if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
+	{
+		GLFWwindow* window = Game::Instance()->GetRenderWindow()->Window();
 		lookAtMove = true;
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
+		glfwGetCursorPos(window, &m_cursorPosition.x, &m_cursorPosition.y);
+	}
 	if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE)
+	{
+		GLFWwindow* window = Game::Instance()->GetRenderWindow()->Window();
 		lookAtMove = false;
+		glfwSetCursorPos(window, m_cursorPosition.x, m_cursorPosition.y);
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_FALSE);
+	}
 }
 
 //----------------------------------------------------------

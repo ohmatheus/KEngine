@@ -13,16 +13,16 @@ public:
 
 	void	SetVertices(float *vertices, uint componentNbr, uint size, uint stride, uint mode);
 
-	uint	VerticesNbr() { return m_VerticeNbr; }
+	uint	VerticesNbr() { return m_verticeNbr; }
 
 //protected:
 	uint	m_VBO;
 	uint	m_VAO;
-	uint	m_Size;		// Specifies the number of components per generic vertex attribute.
-	uint	m_Stride;	// Specifies the byte offset between consecutive generic vertex attributes.
-	uint	m_Mode;
-	uint	m_VerticeNbr;
-	float	*m_Vertices;
+	uint	m_size;		// Specifies the number of components per generic vertex attribute.
+	uint	m_stride;	// Specifies the byte offset between consecutive generic vertex attributes.
+	uint	m_mode;
+	uint	m_verticeNbr;
+	float	*m_vertices;
 };
 
 //----------------------------------------------------------

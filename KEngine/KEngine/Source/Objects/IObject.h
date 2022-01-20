@@ -21,21 +21,21 @@ public:
 
 	const glm::mat4			ModelWorldMatrix();
 
-	glm::vec3&				Position() { return m_Position; }
-	glm::vec3&				Rotation() { return m_Rotation; }
-	glm::vec3&				Scale() { return m_Scale; }
-	glm::vec3&				Color() { return m_Color; }
+	glm::vec3&				Position() { return m_position; }
+	glm::vec3&				Rotation() { return m_rotation; }
+	glm::vec3&				Scale() { return m_scale; }
+	glm::vec3&				Color() { return m_color; }
 
-	const std::string&		ShaderName() { return m_ShaderName; }
-	void					SetShaderName(const char* name) { m_ShaderName = name; }
-	const std::string&		MeshName() { return m_MeshName; }
-	void					SetMeshName(const char* name) { m_MeshName = name; }
+	const std::string&		ShaderName() { return m_shaderName; }
+	void					SetShaderName(const char* name) { m_shaderName = name; }
+	const std::string&		MeshName() { return m_meshName; }
+	void					SetMeshName(const char* name) { m_meshName = name; }
 
 protected:
-	glm::vec3				m_Position; // x y z
-	glm::vec3				m_Rotation; // pitch yaw roll
-	glm::vec3				m_Scale;
-	glm::vec3				m_Color;
-	std::string				m_ShaderName; // TODO replace by an ID
-	std::string				m_MeshName; // TODO replace by an ID
+	glm::vec3				m_position; // x y z
+	glm::vec3				m_rotation; // pitch yaw roll
+	glm::vec3				m_scale;
+	glm::vec3				m_color;
+	std::string				m_shaderName; // TODO replace by an ID
+	std::string				m_meshName; // TODO replace by an ID
 };

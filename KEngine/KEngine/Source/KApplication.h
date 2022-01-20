@@ -15,8 +15,8 @@ public:
 	void				Terminate();
 
 private:
-	KWindow				*m_RenderWindow;
+	KWindow				*m_renderWindow;
 	KWindow				*m_ControllerWindow;
-	Game				*m_Game;
+	Game				*m_game;
 };
 

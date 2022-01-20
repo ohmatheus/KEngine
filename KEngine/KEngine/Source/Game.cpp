@@ -15,25 +15,25 @@ Game* Game::m_instance = nullptr;
 
 //----------------------------------------------------------
 Game::Game(KWindow *renderWindow)
-:	m_RenderWindow(renderWindow)
-,	m_RenderSystem(nullptr)
+:	m_renderWindow(renderWindow)
+,	m_renderSystem(nullptr)
 {
-	assert(m_RenderWindow != nullptr);
+	assert(m_renderWindow != nullptr);
 	m_instance = this;
 }
 
 //----------------------------------------------------------
 Game::~Game()
 {
-	for (size_t i = 0; i < m_Scenes.size(); ++i)
-		delete m_Scenes[i];
-	m_Scenes.clear();
+	for (size_t i = 0; i < m_scenes.size(); ++i)
+		delete m_scenes[i];
+	m_scenes.clear();
 
-	if (m_IsGameRunning)
+	if (m_isGameRunning)
 		delete m_currentScene;
 
-	if (m_RenderSystem)
-		delete m_RenderSystem;
+	if (m_renderSystem)
+		delete m_renderSystem;
 }
 
 //----------------------------------------------------------
@@ -46,7 +46,7 @@ void		Game::Setup()
 		return;
 	}
 
-	m_RenderWindow->MakeCurrent();
+	m_renderWindow->MakeCurrent();
 
 	// During init, enable debug output
 	glEnable(GL_DEBUG_OUTPUT);
@@ -55,9 +55,9 @@ void		Game::Setup()
 
 	_InitRenderSystem();
 
-	m_Scenes.push_back(new BasicScene(this));
+	m_scenes.push_back(new BasicScene(this));
 
-	m_currentScene = m_Scenes[0];
+	m_currentScene = m_scenes[0];
 
 	m_currentScene->BuildScene();
 }
@@ -65,15 +65,15 @@ void		Game::Setup()
 //----------------------------------------------------------
 void		Game::Update(float dt)
 {
-	m_currentScene->Update(dt);
+	m_currentScene->Update(m_paused ? 0.f : dt);
 }
 
 //----------------------------------------------------------
 void		Game::Render()
 {
-	m_RenderWindow->MakeCurrent();
+	m_renderWindow->MakeCurrent();
 
-	glViewport(0, 0, m_RenderWindow->Width(), m_RenderWindow->Height());
+	glViewport(0, 0, m_renderWindow->Width(), m_renderWindow->Height());
 
 	m_currentScene->Render();
 }
@@ -81,16 +81,16 @@ void		Game::Render()
 //----------------------------------------------------------
 void	Game::TooglePlayStop()
 {
-	m_TogglePlayStop = true;
+	m_togglePlayStop = true;
 }
 
 //----------------------------------------------------------
 void	Game::_StartScene()
 {
-	m_currentScene = m_Scenes[0]->Clone();
+	m_currentScene = m_scenes[0]->Clone();
 	m_currentScene->OnSceneStart();
-	m_IsGameRunning = true;
-	m_Paused = false;
+	m_isGameRunning = true;
+	m_paused = false;
 }
 
 //----------------------------------------------------------
@@ -100,28 +100,28 @@ void	Game::_StopScene()
 	{
 		delete m_currentScene;
 	}
-	m_currentScene = m_Scenes[0];
-	m_IsGameRunning = false;
-	m_Paused = false;
+	m_currentScene = m_scenes[0];
+	m_isGameRunning = false;
+	m_paused = false;
 }
 
 //----------------------------------------------------------
 void	Game::_CheckTogglePlayStop()
 {
-	if (m_TogglePlayStop)
+	if (m_togglePlayStop)
 	{
-		if (!m_IsGameRunning)
+		if (!m_isGameRunning)
 			_StartScene();
 		else
 			_StopScene();
-		m_TogglePlayStop = false;
+		m_togglePlayStop = false;
 	}
 }
 
 //----------------------------------------------------------
 void	Game::AddScene(IScene* scene)
 {
-	m_Scenes.push_back(scene);
+	m_scenes.push_back(scene);
 	m_currentScene = scene;
 }
 
@@ -129,6 +129,8 @@ void	Game::AddScene(IScene* scene)
 void	Game::OnKeyEvent(int key, int scancode, int action, int mods)
 {
 	m_currentScene->OnKeyEvent(key, scancode, action, mods);
+	if (key == GLFW_KEY_P && action == GLFW_PRESS)
+		m_paused = !m_paused;
 }
 
 //----------------------------------------------------------
@@ -152,6 +154,6 @@ void	Game::OnScrollMoved(float xoffset, float yoffset)
 //----------------------------------------------------------
 void	Game::_InitRenderSystem()
 {
-	m_RenderSystem = new RenderSystem(this);
+	m_renderSystem = new RenderSystem(this);
 }
 

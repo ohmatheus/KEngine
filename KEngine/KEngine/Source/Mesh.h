@@ -23,27 +23,27 @@ struct Vertex
 //----------------------------------------------------------
 struct Texture
 {
-	unsigned int	m_Id;
-	//TextureType		m_Type;
-	std::string		m_Type;
-	std::string		m_Path;
+	unsigned int	m_id;
+	//TextureType		m_type;
+	std::string		m_type;
+	std::string		m_path;
 };
 
 //----------------------------------------------------------
 class Mesh
 {
 public:
-	std::vector<Vertex>			m_Vertices;
-	std::vector<unsigned int>	m_Indices;
-	std::vector<Texture>		m_Textures;
+	std::vector<Vertex>			m_vertices;
+	std::vector<unsigned int>	m_indices;
+	std::vector<Texture>		m_textures;
 
 	Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, std::vector<Texture>& textures);
 
 	void				Draw(GLShader* shader);
 
 private:
-	unsigned int VAO, VBO, EBO;
-	uint						m_Mode;
+	unsigned int m_VAO, m_VBO, m_EBO;
+	uint						m_mode;
 
-	void				SetupMesh();
+	void						_SetupMesh();
 };

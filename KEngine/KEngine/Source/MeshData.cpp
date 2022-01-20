@@ -4,7 +4,7 @@
 
 //----------------------------------------------------------
 MeshData::MeshData()
-:	m_Vertices(nullptr)
+:	m_vertices(nullptr)
 ,	m_VBO(0)
 ,	m_VAO(0)
 {
@@ -13,17 +13,17 @@ MeshData::MeshData()
 //----------------------------------------------------------
 MeshData::~MeshData()
 {
-	if (m_Vertices)
-		delete m_Vertices;
+	if (m_vertices)
+		delete m_vertices;
 }
 
 //----------------------------------------------------------
 void	MeshData::SetVertices(float *vertices, uint componentNbr, uint size, uint stride, uint mode)
 {
-	m_Size = size;
-	m_Stride = stride;
-	m_Mode = mode;
-	m_VerticeNbr = componentNbr / size;
+	m_size = size;
+	m_stride = stride;
+	m_mode = mode;
+	m_verticeNbr = componentNbr / size;
 
 	glGenVertexArrays(1, &m_VAO);
 	glGenBuffers(1, &m_VBO);
@@ -37,18 +37,18 @@ void	MeshData::SetVertices(float *vertices, uint componentNbr, uint size, uint s
 	// GL_DYNAMIC_DRAW : the data is likely to change a lot.
 	// GL_STREAM_DRAW : the data will change every time it is drawn.
 	glBufferData(GL_ARRAY_BUFFER, componentNbr * sizeof(float), vertices, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, m_Size, GL_FLOAT, GL_FALSE, m_Stride, (void*)0);
+	glVertexAttribPointer(0, m_size, GL_FLOAT, GL_FALSE, m_stride, (void*)0);
 
 	glEnableVertexAttribArray(0);
 	glBindVertexArray(0);
 
-	m_Vertices = nullptr;
+	m_vertices = nullptr;
 }
 
 //----------------------------------------------------------
 uint	MeshData::Mode()
 {
-	return m_Mode;
+	return m_mode;
 }
 
 //----------------------------------------------------------

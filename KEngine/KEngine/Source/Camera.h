@@ -48,6 +48,8 @@ private:
 	ECamMode		m_mode;
 	float			m_fov;
 
+	glm::f64vec2	m_cursorPosition;
+
 	glm::vec3		m_position;
 	glm::vec3		m_direction;
 					
@@ -70,4 +72,6 @@ private:
 	bool			m_goBack;
 	bool			m_goRight;
 	bool			m_goLeft;
+	bool			m_goUp;
+	bool			m_goDown;
 };

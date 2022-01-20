@@ -11,17 +11,17 @@
 
 //----------------------------------------------------------
 KApplication::KApplication()
-:	m_RenderWindow(nullptr)
-,	m_Game(nullptr)
+:	m_renderWindow(nullptr)
+,	m_game(nullptr)
 {}
 
 //----------------------------------------------------------
 KApplication::~KApplication()
 {
-	if (m_Game != nullptr)
-		delete m_Game;
-	if (m_RenderWindow)
-		delete m_RenderWindow;
+	if (m_game != nullptr)
+		delete m_game;
+	if (m_renderWindow)
+		delete m_renderWindow;
 	if (m_ControllerWindow)
 		delete m_ControllerWindow;
 }
@@ -37,16 +37,16 @@ void	KApplication::Setup()
 	m_ControllerWindow = new KWindow();
 	m_ControllerWindow->CreateAndOpen("K Controller Window", 0.3f, 0.2f, 0.3f);
 
-	m_RenderWindow = new KWindow();
-	m_RenderWindow->CreateAndOpen("K Main Window", 0.2f, 0.3f, 0.3f);
+	m_renderWindow = new KWindow();
+	m_renderWindow->CreateAndOpen("K Main Window", 0.2f, 0.3f, 0.3f);
 
 	//glClearDepth(1.f);
 	glEnable(GL_DEPTH_TEST);
 
-	m_Game = new Game(m_RenderWindow);
-	m_RenderWindow->SetGame(m_Game);
-	m_ControllerWindow->SetGame(m_Game);
-	m_Game->Setup();
+	m_game = new Game(m_renderWindow);
+	m_renderWindow->SetGame(m_game);
+	m_ControllerWindow->SetGame(m_game);
+	m_game->Setup();
 }
 
 //----------------------------------------------------------
@@ -59,33 +59,33 @@ void	KApplication::Loop()
 	double			limitedDt = 0;
 	timer.Start();
 
-	while (!m_RenderWindow->ShouldClose() && !m_ControllerWindow->ShouldClose())
+	while (!m_renderWindow->ShouldClose() && !m_ControllerWindow->ShouldClose())
 	{
 		m_ControllerWindow->MakeCurrent();
 		m_ControllerWindow->Clear();
 
-		m_RenderWindow->MakeCurrent();
-		m_RenderWindow->Clear();
+		m_renderWindow->MakeCurrent();
+		m_renderWindow->Clear();
 
 		glfwPollEvents(); // input callbacks are unstacked here
 
 		// input
 		m_ControllerWindow->MakeCurrent();
 		m_ControllerWindow->ProcessWindowInput();
-		m_RenderWindow->MakeCurrent();
-		m_RenderWindow->ProcessWindowInput();
+		m_renderWindow->MakeCurrent();
+		m_renderWindow->ProcessWindowInput();
 
 		// logic
-		m_Game->Update((float)dt);
-		m_Game->Render();
+		m_game->Update((float)dt);
+		m_game->Render();
 
 		// rendering
 
 		// check and call events and swap buffers
 		m_ControllerWindow->MakeCurrent();
 		m_ControllerWindow->SwapBuffers();
-		m_RenderWindow->MakeCurrent();
-		m_RenderWindow->SwapBuffers();
+		m_renderWindow->MakeCurrent();
+		m_renderWindow->SwapBuffers();
 
 		//glfwWaitEventsTimeout(0.7); seems interesting for editor side
 

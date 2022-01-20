@@ -129,9 +129,9 @@ std::vector<Texture>	Model::LoadMaterialTextures(aiMaterial* mat, aiTextureType 
 
 		TextureResource* tex = rS->AddTextureResourceAndLoad(m_Directory, textureName, textureType);
 
-		texture.m_Id = tex->TextureRenderId();
-		texture.m_Type = typeName;
-		texture.m_Path = str.C_Str();
+		texture.m_id = tex->TextureRenderId();
+		texture.m_type = typeName;
+		texture.m_path = str.C_Str();
 
 		textures.push_back(texture);
 	}

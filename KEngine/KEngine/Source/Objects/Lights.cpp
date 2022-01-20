@@ -34,7 +34,6 @@ void	ILight::Render(RenderSystem* rS, Camera* camera)
 
 	glBindVertexArray(mesh->VAO());
 
-	//glBindBuffer(GL_ARRAY_BUFFER, mesh->VBO()); // is it necessary to couple that with glBindVertexArray ?
 	glDrawArrays(mesh->Mode(), 0, mesh->VerticesNbr());
 	glBindVertexArray(0);
 	glEnableVertexAttribArray(0);
@@ -45,7 +44,7 @@ void	ILight::Render(RenderSystem* rS, Camera* camera)
 void	PointLight::OnSceneStart()
 {
 	ILight::OnSceneStart();
-	m_initialPosition = m_Position;
+	m_initialPosition = m_position;
 }
 
 //----------------------------------------------------------
@@ -69,7 +68,7 @@ void	PointLight::Update(float dt)
 void	SpotLight::OnSceneStart()
 {
 	ILight::OnSceneStart();
-	m_initialPosition = m_Position;
+	m_initialPosition = m_position;
 }
 
 //----------------------------------------------------------

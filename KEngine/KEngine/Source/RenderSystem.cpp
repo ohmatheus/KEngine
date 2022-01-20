@@ -6,6 +6,7 @@
 #include "GLShader.h"
 #include "MeshData.h"
 #include "TextureResource.h"
+#include "Model.h"
 
 #include <sstream>
 #include <map>
@@ -14,7 +15,7 @@
 
 //----------------------------------------------------------
 RenderSystem::RenderSystem(Game *game)
-:	m_Game(game)
+:	m_game(game)
 {
 	_LoadShaders();
 	_LoadMeshes();
@@ -69,6 +70,15 @@ bool	RenderSystem::RegisterTexture(std::string const& textureName, TextureResour
 	m_TextureBank[textureName] = tex;
 	return true;
 }
+
+bool	RenderSystem::RegisterModel(std::string const& modelName, Model* model)
+{
+	if (m_modelBank[modelName] != nullptr)
+		return false;
+	m_modelBank[modelName] = model;
+	return true;
+}
+
 
 //----------------------------------------------------------
 void	RenderSystem::LoadTexture(TextureResource* tex, const char* filePath)
@@ -411,10 +421,10 @@ void	RenderSystem::_LoadMeshes()
 		};
 		//mesh->SetVertices(vertices, ARRAY_COUNT(vertices), 3, 3 * sizeof(float), GL_TRIANGLE_STRIP);
 
-		//mesh->m_Size = ARRAY_COUNT(vertices);
-		//mesh->m_Stride = stride;
-		mesh->m_Mode = GL_TRIANGLE_STRIP;
-		mesh->m_VerticeNbr = 4;
+		//mesh->m_size = ARRAY_COUNT(vertices);
+		//mesh->m_stride = stride;
+		mesh->m_mode = GL_TRIANGLE_STRIP;
+		mesh->m_verticeNbr = 4;
 
 		glGenVertexArrays(1, &mesh->m_VAO);
 		glGenBuffers(1, &mesh->m_VBO);
@@ -530,8 +540,8 @@ void	RenderSystem::_LoadMeshes()
 	{
 		MeshData* mesh = new MeshData;
 
-		mesh->m_Mode = GL_TRIANGLES;
-		mesh->m_VerticeNbr = 36;
+		mesh->m_mode = GL_TRIANGLES;
+		mesh->m_verticeNbr = 36;
 
 		glGenVertexArrays(1, &mesh->m_VAO);
 		glGenBuffers(1, &mesh->m_VBO);
@@ -554,8 +564,8 @@ void	RenderSystem::_LoadMeshes()
 	{
 		MeshData* mesh = new MeshData;
 
-		mesh->m_Mode = GL_TRIANGLES;
-		mesh->m_VerticeNbr = 36;
+		mesh->m_mode = GL_TRIANGLES;
+		mesh->m_verticeNbr = 36;
 
 		glGenVertexArrays(1, &mesh->m_VAO);
 		glGenBuffers(1, &mesh->m_VBO);
@@ -580,8 +590,8 @@ void	RenderSystem::_LoadMeshes()
 	{
 		MeshData* mesh = new MeshData;
 
-		mesh->m_Mode = GL_TRIANGLES;
-		mesh->m_VerticeNbr = 36;
+		mesh->m_mode = GL_TRIANGLES;
+		mesh->m_verticeNbr = 36;
 
 		glGenVertexArrays(1, &mesh->m_VAO);
 		glGenBuffers(1, &mesh->m_VBO);
@@ -667,4 +677,13 @@ void	RenderSystem::_LoadTextures()
 		RegisterTexture(tex->Name(), tex);
 	}
 }
+
+void	RenderSystem::_LoadModels()
+{
+	{
+		Model* model = new Model(ModelPath("backpack/backpack.obj").c_str());
+		RegisterModel("backpack", model);
+	}
+}
+
 
