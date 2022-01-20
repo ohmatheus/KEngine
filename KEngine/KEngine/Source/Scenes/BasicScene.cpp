@@ -7,11 +7,9 @@
 #include "KWindow.h"
 #include "Objects/BasicObject.h"
 #include "Objects/Lights.h"
-#include "Objects/TexturedCube.h"
 #include "Objects/ModeledObject.h"
 
 #include "GLShader.h"
-#include "MeshData.h"
 
 #include "stb_image.h"
 
@@ -31,9 +29,6 @@ BasicScene::~BasicScene()
 {
 	for (int i = 0; i < m_lightCastedObjects.size(); i++)
 		delete m_lightCastedObjects[i];
-
-	for (int i = 0; i < m_Objects.size(); i++)
-		delete m_Objects[i];
 
 	for (int i = 0; i < m_pointLights.size(); i++)
 		delete m_pointLights[i];
@@ -60,11 +55,11 @@ IScene* BasicScene::Clone()
 void	BasicScene::BuildScene()
 {
 	{
-		IObject* obj = new TexturedCube();
-		obj->SetMeshName("TexturedCube");
-		obj->SetShaderName("TexturedMeshShader");
+		ModeledObject* obj = new ModeledObject();
+		obj->SetModelName("backpack");
+		obj->SetShaderName("SimpleModel");
 		obj->Position() = glm::vec3(0.f, 0.f, 0.f);
-		m_Objects.push_back(obj);
+		m_lightCastedObjects.push_back(obj);
 	}
 
 	glm::vec3 cubePositions[] =
@@ -86,12 +81,9 @@ void	BasicScene::BuildScene()
 		float angle = 20.0f * i;
 		ModeledObject* lightCastedObject = new ModeledObject();
 
-		//lightCastedObject->SetMeshName("SimpleCube_Normal");
 		lightCastedObject->SetShaderName("SimpleLightCastedObject");
 
 		lightCastedObject->SetModelName("ContainerCube");
-
-		//ContainerCube
 
 		lightCastedObject->Position() = cubePositions[i];
 		float rad = glm::radians(angle);
@@ -101,7 +93,6 @@ void	BasicScene::BuildScene()
 	}
 
 	ModeledObject* lightCastedObject = new ModeledObject();
-	//lightCastedObject->SetMeshName("SimpleCube_Normal");
 	lightCastedObject->SetModelName("ContainerCube");
 	lightCastedObject->SetShaderName("SimpleLightCastedObject");
 	lightCastedObject->Position() = glm::vec3(0.f, -30.f, 0.f);
@@ -110,9 +101,6 @@ void	BasicScene::BuildScene()
 	m_lightCastedObjects.push_back(lightCastedObject);
 
 	CreateLights();
-
-	for (int i = 0; i < m_Objects.size(); i++)
-		m_Objects[i]->OnSceneBuild();
 
 	// to remove
 	for (int i = 0; i < m_pointLights.size(); i++)
@@ -127,9 +115,6 @@ void	BasicScene::OnSceneStart()
 {
 	// not implemented
 
-	for (int i = 0; i < m_Objects.size(); i++)
-		m_Objects[i]->OnSceneStart();
-
 	for (int i = 0; i < m_pointLights.size(); i++)
 		m_pointLights[i]->OnSceneStart();
 }
@@ -138,9 +123,6 @@ void	BasicScene::OnSceneStart()
 void	BasicScene::Update(float dt)
 {
 	super::Update(dt);
-
-	for (int i = 0; i < m_Objects.size(); i++)
-		m_Objects[i]->Update(dt);
 
 	for (int i = 0; i < m_pointLights.size(); i++)
 		m_pointLights[i]->Update(dt);
@@ -158,16 +140,10 @@ void	BasicScene::Render()
 	GLShader*	lightShader = rS->GetShader(m_pointLights[0]->ShaderName());
 	GLShader*	overrideShader = m_sceneMode == ESceneMode::Depth ? rS->GetShader("Depth") : nullptr;
 
-
-	model = rS->GetModel("backpack");// new Model(ModelPath("backpack/backpack.obj").c_str());
-
 	{
 		m_camera.SetOrthoMat(glm::ortho(-400.f, 400.0f, -300.f, 300.0f, 0.1f, 200.0f));
 		m_camera.SetProjMat(glm::perspective(glm::radians(m_camera.Fov()), (float)m_game->GetRenderWindow()->Width() / (float)m_game->GetRenderWindow()->Height(), 0.1f, 200.0f));
 	}
-	//for (int i = 0; i < m_Objects.size(); i++)
-	//	m_Objects[i]->Render(rS, &m_camera);
-
 
 	for (int i = 0; i < m_pointLights.size(); i++)
 		m_pointLights[i]->Render(rS, &m_camera, overrideShader ? overrideShader : lightShader);
@@ -177,13 +153,9 @@ void	BasicScene::Render()
 
 	// render lightCastedObject
 	{
-		TextureResource*	container2tex = rS->GetTexture("container2"); // diffuseMap
-		TextureResource*	container2tex_specular = rS->GetTexture("container2_specularMap"); // specularMap
-
 		for (int i = 0; i < m_lightCastedObjects.size(); i++)
 		{
 			glm::mat4			modelW = m_lightCastedObjects[i]->ModelWorldMatrix();
-			//MeshData*			mesh = rS->GetMesh(m_lightCastedObjects[i]->MeshName());
 			Model*				model = rS->GetModel(m_lightCastedObjects[i]->ModelName());
 
 			if (overrideShader)
@@ -196,10 +168,6 @@ void	BasicScene::Render()
 
 				model->Draw(overrideShader);
 
-				//glBindVertexArray(model ->VAO());
-				//glDrawArrays(mesh->Mode(), 0, mesh->VerticesNbr());
-				//glBindVertexArray(0);
-				//glEnableVertexAttribArray(0);
 				overrideShader->Unbind();
 			}
 			else
@@ -212,14 +180,6 @@ void	BasicScene::Render()
 				glUniformMatrix4fv(shader->Uniform("proj"), 1, GL_FALSE, glm::value_ptr(m_camera.ProjMat()));
 
 				glUniform3f(shader->Uniform("viewPos"), m_camera.Position().x, m_camera.Position().y, m_camera.Position().z);
-
-				glActiveTexture(GL_TEXTURE0);
-				glBindTexture(GL_TEXTURE_2D, container2tex->TextureRenderId());
-				glUniform1i(glGetUniformLocation(shader->ProgramID(), "material.diffuse"), 0);
-
-				glActiveTexture(GL_TEXTURE1);
-				glBindTexture(GL_TEXTURE_2D, container2tex_specular->TextureRenderId());
-				glUniform1i(glGetUniformLocation(shader->ProgramID(), "material.specular"), 1);
 
 				glUniform1f(shader->Uniform("material.shininess"), 32.f);
 
@@ -256,65 +216,9 @@ void	BasicScene::Render()
 				}
 
 				model->Draw(shader);
-
-				//glBindVertexArray(mesh->VAO());
-				//
-				////glBindBuffer(GL_ARRAY_BUFFER, mesh->VBO()); // is it necessary to couple that with glBindVertexArray ?
-				//glDrawArrays(mesh->Mode(), 0, mesh->VerticesNbr());
-				//glBindVertexArray(0);
-				//glEnableVertexAttribArray(0);
 				shader->Unbind();
 			}
 		}
-	}
-
-	{
-		GLShader* shader = overrideShader ? overrideShader : rS->GetShader("SimpleModel");
-		glm::mat4			modelW = m_Objects[0]->ModelWorldMatrix();
-
-		shader->Bind();			
-		glUniformMatrix4fv(shader->Uniform("model"), 1, GL_FALSE, glm::value_ptr(modelW));
-		glUniformMatrix4fv(shader->Uniform("view"), 1, GL_FALSE, glm::value_ptr(m_camera.GetViewM()));
-		glUniformMatrix4fv(shader->Uniform("proj"), 1, GL_FALSE, glm::value_ptr(m_camera.ProjMat()));
-
-		glUniform3f(shader->Uniform("viewPos"), m_camera.Position().x, m_camera.Position().y, m_camera.Position().z);
-
-		glUniform1f(shader->Uniform("material.shininess"), 32.f);
-
-		glUniform3f(shader->Uniform("dirLight.direction"), m_dirLight->m_direction.x, m_dirLight->m_direction.y, m_dirLight->m_direction.z);
-		glUniform3f(shader->Uniform("dirLight.ambient"), m_dirLight->m_ambient.x, m_dirLight->m_ambient.y, m_dirLight->m_ambient.z);
-		glUniform3f(shader->Uniform("dirLight.diffuse"), m_dirLight->m_diffuse.x, m_dirLight->m_diffuse.y, m_dirLight->m_diffuse.z);
-		glUniform3f(shader->Uniform("dirLight.specular"), m_dirLight->m_specular.x, m_dirLight->m_specular.y, m_dirLight->m_specular.z);
-
-		for (int i = 0; i < m_pointLights.size(); i++)
-		{
-			std::string number = std::to_string(i);
-			glUniform3f(shader->Uniform(("pointLights[" + number + "].position").c_str()), m_pointLights[i]->Position().x, m_pointLights[i]->Position().y, m_pointLights[i]->Position().z);
-			glUniform3f(shader->Uniform(("pointLights[" + number + "].ambient").c_str()), m_pointLights[i]->m_ambient.x, m_pointLights[i]->m_ambient.y, m_pointLights[i]->m_ambient.z);
-			glUniform3f(shader->Uniform(("pointLights[" + number + "].diffuse").c_str()), m_pointLights[i]->m_diffuse.x, m_pointLights[i]->m_diffuse.y, m_pointLights[i]->m_diffuse.z);
-			glUniform3f(shader->Uniform(("pointLights[" + number + "].specular").c_str()), m_pointLights[i]->m_specular.x, m_pointLights[i]->m_specular.y, m_pointLights[i]->m_specular.z);
-			glUniform1f(shader->Uniform(("pointLights[" + number + "].constant").c_str()), m_pointLights[i]->m_constant);
-			glUniform1f(shader->Uniform(("pointLights[" + number + "].linear").c_str()), m_pointLights[i]->m_linear);
-			glUniform1f(shader->Uniform(("pointLights[" + number + "].quadratic").c_str()), m_pointLights[i]->m_quadratic);
-		}
-
-		for (int i = 0; i < m_spotLights.size(); i++)
-		{
-			std::string number = std::to_string(i);
-			glUniform3f(shader->Uniform(("spotLights[" + number + "].position").c_str()), m_spotLights[i]->Position().x, m_spotLights[i]->Position().y, m_spotLights[i]->Position().z);
-			glUniform3f(shader->Uniform(("spotLights[" + number + "].direction").c_str()), m_spotLights[i]->m_direction.x, m_spotLights[i]->m_direction.y, m_spotLights[i]->m_direction.z);
-			glUniform3f(shader->Uniform(("spotLights[" + number + "].ambient").c_str()), m_spotLights[i]->m_ambient.x, m_spotLights[i]->m_ambient.y, m_spotLights[i]->m_ambient.z);
-			glUniform3f(shader->Uniform(("spotLights[" + number + "].diffuse").c_str()), m_spotLights[i]->m_diffuse.x, m_spotLights[i]->m_diffuse.y, m_spotLights[i]->m_diffuse.z);
-			glUniform3f(shader->Uniform(("spotLights[" + number + "].specular").c_str()), m_spotLights[i]->m_specular.x, m_spotLights[i]->m_specular.y, m_spotLights[i]->m_specular.z);
-			glUniform1f(shader->Uniform(("spotLights[" + number + "].constant").c_str()), m_spotLights[i]->m_constant);
-			glUniform1f(shader->Uniform(("spotLights[" + number + "].linear").c_str()), m_spotLights[i]->m_linear);
-			glUniform1f(shader->Uniform(("spotLights[" + number + "].quadratic").c_str()), m_spotLights[i]->m_quadratic);
-			glUniform1f(shader->Uniform(("spotLights[" + number + "].cutoff").c_str()), m_spotLights[i]->m_cutoff);
-			glUniform1f(shader->Uniform(("spotLights[" + number + "].outerCutoff").c_str()), m_spotLights[i]->m_outerCutoff);
-		}
-
-		model->Draw(shader);
-		shader->Unbind();
 	}
 }
 

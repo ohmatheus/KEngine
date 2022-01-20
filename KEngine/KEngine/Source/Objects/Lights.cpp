@@ -3,11 +3,12 @@
 #include "Lights.h"
 #include "RenderSystem.h"
 #include "Camera.h"
+#include "Model.h"
 
 //----------------------------------------------------------
 ILight::ILight()
 {
-	SetMeshName("SimpleCube");
+	SetModelName("SimpleCube");
 	SetShaderName("LightObject");
 	Scale() = glm::vec3(0.2f);
 }
@@ -18,7 +19,7 @@ void	ILight::Render(RenderSystem* rS, Camera* camera, GLShader* shader)
 	glm::mat4		modelW = ModelWorldMatrix();
 
 	shader = (shader == nullptr ? rS->GetShader(ShaderName()) : shader);
-	MeshData* mesh = rS->GetMesh(MeshName());
+	Model* model = rS->GetModel(ModelName());
 
 	// draw color
 	float max = std::max(std::max(m_ambient.x, m_ambient.y), m_ambient.z);
@@ -32,11 +33,8 @@ void	ILight::Render(RenderSystem* rS, Camera* camera, GLShader* shader)
 	glUniformMatrix4fv(shader->Uniform("proj"), 1, GL_FALSE, glm::value_ptr(camera->ProjMat()));
 	glUniform3f(shader->Uniform("lightColor"), drawColor.x, drawColor.y, drawColor.z);
 
-	glBindVertexArray(mesh->VAO());
+	model->Draw(shader);
 
-	glDrawArrays(mesh->Mode(), 0, mesh->VerticesNbr());
-	glBindVertexArray(0);
-	glEnableVertexAttribArray(0);
 	shader->Unbind();
 }
 

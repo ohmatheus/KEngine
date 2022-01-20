@@ -1,9 +1,10 @@
 #pragma once
 
 #include "IObject.h"
+#include "ModeledObject.h"
 
 //----------------------------------------------------------
-class	ILight : public IObject
+class	ILight : public ModeledObject
 {
 public:
 	ILight();

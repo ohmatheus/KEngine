@@ -4,7 +4,6 @@
 
 #include "Game.h"
 #include "GLShader.h"
-#include "MeshData.h"
 #include "TextureResource.h"
 #include "Model.h"
 
@@ -24,7 +23,6 @@ RenderSystem::RenderSystem(Game *game)
 void	RenderSystem::LoadAll()
 {
 	_LoadShaders();
-	_LoadMeshes();
 	_LoadTextures();
 	_LoadModels();
 }
@@ -32,17 +30,17 @@ void	RenderSystem::LoadAll()
 //----------------------------------------------------------
 RenderSystem::~RenderSystem()
 {
-	for (std::map<std::string, GLShader*>::iterator it = m_ShaderBank.begin(); it != m_ShaderBank.end(); it++)
+	for (std::map<std::string, GLShader*>::iterator it = m_shaderBank.begin(); it != m_shaderBank.end(); it++)
 		delete it->second;
-	m_ShaderBank.clear();
+	m_shaderBank.clear();
 
-	for (std::map<std::string, MeshData*>::iterator it = m_MeshBank.begin(); it != m_MeshBank.end(); it++)
+	for (std::map<std::string, Model*>::iterator it = m_modelBank.begin(); it != m_modelBank.end(); it++)
 		delete it->second;
-	m_MeshBank.clear();
+	m_modelBank.clear();
 
-	for (std::map<std::string, TextureResource*>::iterator it = m_TextureBank.begin(); it != m_TextureBank.end(); it++)
+	for (std::map<std::string, TextureResource*>::iterator it = m_textureBank.begin(); it != m_textureBank.end(); it++)
 		delete it->second;
-	m_TextureBank.clear();
+	m_textureBank.clear();
 }
 
 //----------------------------------------------------------
@@ -54,30 +52,22 @@ void	RenderSystem::PreRender()
 //----------------------------------------------------------
 bool	RenderSystem::RegisterShader(std::string const &shaderName, GLShader *shader)
 {
-	if (m_ShaderBank[shaderName] != nullptr)
+	if (m_shaderBank[shaderName] != nullptr)
 		return false;
-	m_ShaderBank[shaderName] = shader;
-	return true;
-}
-
-//----------------------------------------------------------
-bool	RenderSystem::RegisterMesh(std::string const &meshName, MeshData *mesh)
-{
-	if (m_MeshBank[meshName] != nullptr)
-		return false;
-	m_MeshBank[meshName] = mesh;
+	m_shaderBank[shaderName] = shader;
 	return true;
 }
 
 //----------------------------------------------------------
 bool	RenderSystem::RegisterTexture(std::string const& textureName, TextureResource* tex)
 {
-	if (m_TextureBank[textureName] != nullptr)
+	if (m_textureBank[textureName] != nullptr)
 		return false;
-	m_TextureBank[textureName] = tex;
+	m_textureBank[textureName] = tex;
 	return true;
 }
 
+//----------------------------------------------------------
 bool	RenderSystem::RegisterModel(std::string const& modelName, Model* model)
 {
 	if (m_modelBank[modelName] != nullptr)
@@ -85,7 +75,6 @@ bool	RenderSystem::RegisterModel(std::string const& modelName, Model* model)
 	m_modelBank[modelName] = model;
 	return true;
 }
-
 
 //----------------------------------------------------------
 void	RenderSystem::LoadTexture(TextureResource* tex, const char* filePath)
@@ -128,8 +117,8 @@ void	RenderSystem::LoadTexture(TextureResource* tex, const char* filePath)
 //----------------------------------------------------------
 TextureResource* RenderSystem::AddTextureResourceAndLoad(std::string const& directoryPath, std::string const& fileName, std::string const& fileType)
 {
-	if (m_TextureBank[fileName] != nullptr)
-		return m_TextureBank[fileName];
+	if (m_textureBank[fileName] != nullptr)
+		return m_textureBank[fileName];
 
 	TextureResource* tex = new TextureResource(fileName);
 	TextureAttr			attr;
@@ -443,209 +432,156 @@ const float cubeNormalVertices[] = {
 		-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f, 0.0f, 0.0f,
 		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f
 };
-
-//----------------------------------------------------------
-void	RenderSystem::_LoadMeshes()
-{
-	{
-		MeshData *mesh = new MeshData;
-		float vertices[] =
-		{
-			-0.5f,	-0.5f,	0.f,
-			0.5f,	-0.5f,	0.f,
-			0.0f,	0.5f,	0.f
-		};
-		mesh->SetVertices(vertices, ARRAY_COUNT(vertices), 3, 3 * sizeof(float), GL_TRIANGLES);
-		RegisterMesh("Triangle", mesh);
-	}
-
-	{
-		MeshData *mesh = new MeshData;
-		float vertices[] =
-		{
-			-0.5f,	-0.5f,	0.f,	// bot left 
-			0.5f,	-0.5f,	0.f,	// bot right
-			-0.5f,	0.5f,	0.f,	// top left
-			0.5f,	0.5f,	0.f		// top right
-		};
-		mesh->SetVertices(vertices, ARRAY_COUNT(vertices), 3, 3 * sizeof(float), GL_TRIANGLE_STRIP);
-		RegisterMesh("Rectangle", mesh);
-	}
-
-	{
-		MeshData *mesh = new MeshData;
-		float vertices[] =
-		{
-			0.f,	-0.5f,	0.f,
-			0.5f,	0.f,	0.f,
-			-0.5f,	0.f,	0.f,
-			0.f,	0.5f,	0.f
-		};
-		mesh->SetVertices(vertices, ARRAY_COUNT(vertices), 3, 3 * sizeof(float), GL_TRIANGLE_STRIP);
-		RegisterMesh("Diamond", mesh);
-	}
-
-	// ColoredRectangle
-	{
-		MeshData* mesh = new MeshData;
-		float vertices[] = {
-			// positions			// colors			// texture coords
-			-0.5f,	-0.5f,	0.f,   1.0f, 0.0f, 0.0f,	0.0f, 0.0f,		// bot left 
-			0.5f,	-0.5f,	0.f,   0.0f, 1.0f, 0.0f,	1.0f, 0.0f,		// bot right
-			-0.5f,	0.5f,	0.f,   0.0f, 0.0f, 1.0f,	0.0f, 1.0f,		// top left
-			0.5f,	0.5f,	0.f,   1.0f, 1.0f, 0.0f,	1.0f, 1.0f		// top right
-		};
-		//mesh->SetVertices(vertices, ARRAY_COUNT(vertices), 3, 3 * sizeof(float), GL_TRIANGLE_STRIP);
-
-		//mesh->m_size = ARRAY_COUNT(vertices);
-		//mesh->m_stride = stride;
-		mesh->m_mode = GL_TRIANGLE_STRIP;
-		mesh->m_verticeNbr = 4;
-
-		glGenVertexArrays(1, &mesh->m_VAO);
-		glGenBuffers(1, &mesh->m_VBO);
-
-		glBindVertexArray(mesh->m_VAO);
-		// bind, 1 possible in the same time / buffer type
-		glBindBuffer(GL_ARRAY_BUFFER, mesh->m_VBO);
-		glBufferData(GL_ARRAY_BUFFER, ARRAY_COUNT(vertices) * sizeof(float), vertices, GL_STATIC_DRAW);
-
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*) 0);
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-		glEnableVertexAttribArray(2);
-
-		glEnableVertexAttribArray(0);
-		glBindVertexArray(0);
-
-		RegisterMesh("ColoredTexturedRectangle", mesh);
-	}
-
-		// Cube Mesh
-		float texturedCubeVertices[] = {
-		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-		 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-
-		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-		-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-
-		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
-		};
-
-	// Simple Cube
-	{
-		MeshData* mesh = new MeshData;
-
-		mesh->m_mode = GL_TRIANGLES;
-		mesh->m_verticeNbr = 36;
-
-		glGenVertexArrays(1, &mesh->m_VAO);
-		glGenBuffers(1, &mesh->m_VBO);
-
-		glBindVertexArray(mesh->m_VAO);
-		// bind, 1 possible in the same time / buffer type
-		glBindBuffer(GL_ARRAY_BUFFER, mesh->m_VBO);
-		glBufferData(GL_ARRAY_BUFFER, ARRAY_COUNT(texturedCubeVertices) * sizeof(float), texturedCubeVertices, GL_STATIC_DRAW);
-
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-		glEnableVertexAttribArray(0);
-
-		glEnableVertexAttribArray(0);
-		glBindVertexArray(0);
-
-		RegisterMesh("SimpleCube", mesh);
-	}
-
-	// Textured Cube
-	{
-		MeshData* mesh = new MeshData;
-
-		mesh->m_mode = GL_TRIANGLES;
-		mesh->m_verticeNbr = 36;
-
-		glGenVertexArrays(1, &mesh->m_VAO);
-		glGenBuffers(1, &mesh->m_VBO);
-
-		glBindVertexArray(mesh->m_VAO);
-		// bind, 1 possible in the same time / buffer type
-		glBindBuffer(GL_ARRAY_BUFFER, mesh->m_VBO);
-		glBufferData(GL_ARRAY_BUFFER, ARRAY_COUNT(texturedCubeVertices) * sizeof(float), texturedCubeVertices, GL_STATIC_DRAW);
-
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-		glEnableVertexAttribArray(1);
-
-		glEnableVertexAttribArray(0);
-		glBindVertexArray(0);
-
-		RegisterMesh("TexturedCube", mesh);
-	}
-
-	// Cube + Normal + texture
-	{
-		MeshData* mesh = new MeshData;
-
-		mesh->m_mode = GL_TRIANGLES;
-		mesh->m_verticeNbr = 36;
-
-		glGenVertexArrays(1, &mesh->m_VAO);
-		glGenBuffers(1, &mesh->m_VBO);
-
-		glBindVertexArray(mesh->m_VAO);
-		// bind, 1 possible in the same time / buffer type
-		glBindBuffer(GL_ARRAY_BUFFER, mesh->m_VBO);
-		glBufferData(GL_ARRAY_BUFFER, ARRAY_COUNT(cubeNormalVertices) * sizeof(float), cubeNormalVertices, GL_STATIC_DRAW);
-
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-		glEnableVertexAttribArray(2);
-
-		glEnableVertexAttribArray(0);
-		glBindVertexArray(0);
-
-		RegisterMesh("SimpleCube_Normal", mesh);
-	}
-}
+//
+////----------------------------------------------------------
+//void	RenderSystem::_LoadMeshes()
+//{
+//	{
+//		MeshData *mesh = new MeshData;
+//		float vertices[] =
+//		{
+//			-0.5f,	-0.5f,	0.f,
+//			0.5f,	-0.5f,	0.f,
+//			0.0f,	0.5f,	0.f
+//		};
+//		mesh->SetVertices(vertices, ARRAY_COUNT(vertices), 3, 3 * sizeof(float), GL_TRIANGLES);
+//		RegisterMesh("Triangle", mesh);
+//	}
+//
+//	{
+//		MeshData *mesh = new MeshData;
+//		float vertices[] =
+//		{
+//			-0.5f,	-0.5f,	0.f,	// bot left 
+//			0.5f,	-0.5f,	0.f,	// bot right
+//			-0.5f,	0.5f,	0.f,	// top left
+//			0.5f,	0.5f,	0.f		// top right
+//		};
+//		mesh->SetVertices(vertices, ARRAY_COUNT(vertices), 3, 3 * sizeof(float), GL_TRIANGLE_STRIP);
+//		RegisterMesh("Rectangle", mesh);
+//	}
+//
+//	{
+//		MeshData *mesh = new MeshData;
+//		float vertices[] =
+//		{
+//			0.f,	-0.5f,	0.f,
+//			0.5f,	0.f,	0.f,
+//			-0.5f,	0.f,	0.f,
+//			0.f,	0.5f,	0.f
+//		};
+//		mesh->SetVertices(vertices, ARRAY_COUNT(vertices), 3, 3 * sizeof(float), GL_TRIANGLE_STRIP);
+//		RegisterMesh("Diamond", mesh);
+//	}
+//
+//	// ColoredRectangle
+//	{
+//		MeshData* mesh = new MeshData;
+//		float vertices[] = {
+//			// positions			// colors			// texture coords
+//			-0.5f,	-0.5f,	0.f,   1.0f, 0.0f, 0.0f,	0.0f, 0.0f,		// bot left 
+//			0.5f,	-0.5f,	0.f,   0.0f, 1.0f, 0.0f,	1.0f, 0.0f,		// bot right
+//			-0.5f,	0.5f,	0.f,   0.0f, 0.0f, 1.0f,	0.0f, 1.0f,		// top left
+//			0.5f,	0.5f,	0.f,   1.0f, 1.0f, 0.0f,	1.0f, 1.0f		// top right
+//		};
+//		//mesh->SetVertices(vertices, ARRAY_COUNT(vertices), 3, 3 * sizeof(float), GL_TRIANGLE_STRIP);
+//
+//		//mesh->m_size = ARRAY_COUNT(vertices);
+//		//mesh->m_stride = stride;
+//		mesh->m_mode = GL_TRIANGLE_STRIP;
+//		mesh->m_verticeNbr = 4;
+//
+//		glGenVertexArrays(1, &mesh->m_VAO);
+//		glGenBuffers(1, &mesh->m_VBO);
+//
+//		glBindVertexArray(mesh->m_VAO);
+//		// bind, 1 possible in the same time / buffer type
+//		glBindBuffer(GL_ARRAY_BUFFER, mesh->m_VBO);
+//		glBufferData(GL_ARRAY_BUFFER, ARRAY_COUNT(vertices) * sizeof(float), vertices, GL_STATIC_DRAW);
+//
+//		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*) 0);
+//		glEnableVertexAttribArray(0);
+//		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+//		glEnableVertexAttribArray(1);
+//		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+//		glEnableVertexAttribArray(2);
+//
+//		glEnableVertexAttribArray(0);
+//		glBindVertexArray(0);
+//
+//		RegisterMesh("ColoredTexturedRectangle", mesh);
+//	}
+//
+//		// Cube Mesh
+//		float texturedCubeVertices[] = {
+//		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+//		 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+//		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+//		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+//		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+//		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+//
+//		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+//		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+//		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+//		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+//		-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+//		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+//
+//		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+//		-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+//		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+//		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+//		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+//		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+//
+//		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+//		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+//		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+//		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+//		 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+//		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+//
+//		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+//		 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+//		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+//		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+//		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+//		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+//
+//		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+//		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+//		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+//		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+//		-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+//		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+//		};
+//
+//	// Simple Cube
+//	{
+//		MeshData* mesh = new MeshData;
+//
+//		mesh->m_mode = GL_TRIANGLES;
+//		mesh->m_verticeNbr = 36;
+//
+//		glGenVertexArrays(1, &mesh->m_VAO);
+//		glGenBuffers(1, &mesh->m_VBO);
+//
+//		glBindVertexArray(mesh->m_VAO);
+//		// bind, 1 possible in the same time / buffer type
+//		glBindBuffer(GL_ARRAY_BUFFER, mesh->m_VBO);
+//		glBufferData(GL_ARRAY_BUFFER, ARRAY_COUNT(texturedCubeVertices) * sizeof(float), texturedCubeVertices, GL_STATIC_DRAW);
+//
+//		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+//		glEnableVertexAttribArray(0);
+//
+//		glEnableVertexAttribArray(0);
+//		glBindVertexArray(0);
+//
+//		RegisterMesh("SimpleCube", mesh);
+//	}
+//
+//}
 
 void	RenderSystem::_LoadTextures()
 {
@@ -728,16 +664,28 @@ void	RenderSystem::_LoadModels()
 
 		Texture texDiffuse;
 		texDiffuse.m_type = "texture_diffuse";
-		texDiffuse.m_id = m_TextureBank["container2"]->TextureRenderId();
+		texDiffuse.m_id = m_textureBank["container2"]->TextureRenderId();
 		textures.push_back(texDiffuse);
 
 		Texture texSpec;
 		texSpec.m_type = "texture_specular";
-		texSpec.m_id = m_TextureBank["container2_specularMap"]->TextureRenderId();
+		texSpec.m_id = m_textureBank["container2_specularMap"]->TextureRenderId();
 		textures.push_back(texSpec);
 
 		model->LoadMeshFromVertexArray(props, textures);
 		RegisterModel("ContainerCube", model);
+	}
+
+	{
+		Model* model = new Model();
+		std::vector<Texture> textures;
+		SVerticesArrayProperties props;
+
+		props.m_vertices = cubeNormalVertices;
+		props.m_nRVertices = 36;
+
+		model->LoadMeshFromVertexArray(props, textures);
+		RegisterModel("SimpleCube", model);
 	}
 }
 

@@ -37,10 +37,6 @@ public:
 	virtual void				OnKeyEvent(int key, int scancode, int action, int mods);
 
 private:
-	std::vector<IObject*>		m_Objects;
-
-	//std::vector<ModeledObject*>	m_Objects;
-
 	std::vector<ModeledObject*>	m_lightCastedObjects;
 
 	DirectionalLight*			m_dirLight;

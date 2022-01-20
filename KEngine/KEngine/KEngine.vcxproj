@@ -27,13 +27,11 @@
     <ClCompile Include="Source\KWindow.cpp" />
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\Mesh.cpp" />
-    <ClCompile Include="Source\MeshData.cpp" />
     <ClCompile Include="Source\Model.cpp" />
     <ClCompile Include="Source\Objects\BasicObject.cpp" />
     <ClCompile Include="Source\Objects\IObject.cpp" />
     <ClCompile Include="Source\Objects\Lights.cpp" />
     <ClCompile Include="Source\Objects\ModeledObject.cpp" />
-    <ClCompile Include="Source\Objects\TexturedCube.cpp" />
     <ClCompile Include="Source\RenderSystem.cpp" />
     <ClCompile Include="Source\Scenes\BasicScene.cpp" />
     <ClCompile Include="Source\stdafx.cpp" />
@@ -48,13 +46,11 @@
     <ClInclude Include="Source\KApplication.h" />
     <ClInclude Include="Source\KWindow.h" />
     <ClInclude Include="Source\Mesh.h" />
-    <ClInclude Include="Source\MeshData.h" />
     <ClInclude Include="Source\Model.h" />
     <ClInclude Include="Source\Objects\BasicObject.h" />
     <ClInclude Include="Source\Objects\IObject.h" />
     <ClInclude Include="Source\Objects\Lights.h" />
     <ClInclude Include="Source\Objects\ModeledObject.h" />
-    <ClInclude Include="Source\Objects\TexturedCube.h" />
     <ClInclude Include="Source\RenderSystem.h" />
     <ClInclude Include="Source\Scenes\BasicScene.h" />
     <ClInclude Include="Source\stdafx.h" />

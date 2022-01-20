@@ -1,7 +1,6 @@
 #pragma once
 
 #include "GLShader.h"
-#include "MeshData.h"
 #include "TextureResource.h"
 #include "RenderSystem.h"
 
@@ -28,8 +27,6 @@ public:
 
 	const std::string&		ShaderName() { return m_shaderName; }
 	void					SetShaderName(const char* name) { m_shaderName = name; }
-	const std::string&		MeshName() { return m_meshName; }
-	void					SetMeshName(const char* name) { m_meshName = name; }
 
 protected:
 	glm::vec3				m_position; // x y z
@@ -37,5 +34,4 @@ protected:
 	glm::vec3				m_scale;
 	glm::vec3				m_color;
 	std::string				m_shaderName; // TODO replace by an ID
-	std::string				m_meshName; // TODO replace by an ID
 };
