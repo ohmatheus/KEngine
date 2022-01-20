@@ -155,5 +155,6 @@ void	Game::OnScrollMoved(float xoffset, float yoffset)
 void	Game::_InitRenderSystem()
 {
 	m_renderSystem = new RenderSystem(this);
+	m_renderSystem->LoadAll();
 }
 

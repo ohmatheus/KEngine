@@ -22,6 +22,7 @@ public:
 	Game		*GetGame() { return m_game; }
 
 	void		PreRender();
+	void		LoadAll();
 
 	bool				RegisterShader(std::string const &shaderName, GLShader *shader);
 	bool				RegisterMesh(std::string const& meshName, MeshData* mesh);
@@ -31,6 +32,7 @@ public:
 	GLShader*			GetShader(const std::string &name) { return m_ShaderBank[name]; }
 	MeshData*			GetMesh(const std::string &name) { return m_MeshBank[name]; }
 	TextureResource*	GetTexture(const std::string &name) { return m_TextureBank[name]; }
+	Model*				GetModel(const std::string &name) { return m_modelBank[name]; }
 
 	void				LoadTexture(TextureResource *tex, const char* path = nullptr);
 	TextureResource*	AddTextureResourceAndLoad(std::string const& directoryPath, std::string const &fileName, std::string const& fileType);

@@ -13,11 +13,11 @@ ILight::ILight()
 }
 
 //----------------------------------------------------------
-void	ILight::Render(RenderSystem* rS, Camera* camera)
+void	ILight::Render(RenderSystem* rS, Camera* camera, GLShader* shader)
 {
 	glm::mat4		modelW = ModelWorldMatrix();
 
-	GLShader* shader = rS->GetShader(ShaderName());
+	shader = (shader == nullptr ? rS->GetShader(ShaderName()) : shader);
 	MeshData* mesh = rS->GetMesh(MeshName());
 
 	// draw color

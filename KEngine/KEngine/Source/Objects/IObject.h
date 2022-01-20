@@ -17,7 +17,7 @@ public:
 	virtual void			OnSceneBuild() = 0;
 	virtual void			OnSceneStart() = 0;
 	virtual void			Update(float dt) = 0;
-	virtual void			Render(RenderSystem*, Camera*) = 0;
+	virtual void			Render(RenderSystem*, Camera*, GLShader* = nullptr) = 0;
 
 	const glm::mat4			ModelWorldMatrix();
 

@@ -4,10 +4,18 @@
 
 class IObject;
 class BasicObject;
+class ModeledObject;
 
 class DirectionalLight;
 class PointLight;
 class SpotLight;
+
+enum class ESceneMode
+{
+	Normal,
+	Depth,
+	ESceneMode_COUNT
+};
 
 class BasicScene : public IScene
 {
@@ -30,9 +38,14 @@ public:
 
 private:
 	std::vector<IObject*>		m_Objects;
-	std::vector<BasicObject*>	m_lightCastedObjects;
+
+	//std::vector<ModeledObject*>	m_Objects;
+
+	std::vector<ModeledObject*>	m_lightCastedObjects;
 
 	DirectionalLight*			m_dirLight;
 	std::vector<PointLight*>	m_pointLights;
 	std::vector<SpotLight*>		m_spotLights;
+
+	ESceneMode					m_sceneMode;
 };

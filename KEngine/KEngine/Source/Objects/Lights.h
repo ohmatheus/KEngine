@@ -15,7 +15,7 @@ public:
 	virtual void		OnSceneBuild() {}
 	virtual void		OnSceneStart() {}
 	virtual void		Update(float dt) {}
-	virtual void		Render(RenderSystem*, Camera*);
+	virtual void		Render(RenderSystem*, Camera* , GLShader*);
 };
 
 //----------------------------------------------------------

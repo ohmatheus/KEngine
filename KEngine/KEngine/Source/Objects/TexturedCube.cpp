@@ -35,11 +35,11 @@ void		TexturedCube::Update(float dt)
 }
 
 //----------------------------------------------------------
-void		TexturedCube::Render(RenderSystem* rS, Camera* cam)
+void		TexturedCube::Render(RenderSystem* rS, Camera* cam, GLShader* shader)
 {
 	glm::mat4		modelW = ModelWorldMatrix();
 
-	GLShader* shader = rS->GetShader(m_shaderName);
+	shader = shader == nullptr ? rS->GetShader(m_shaderName) : shader;
 	MeshData* mesh = rS->GetMesh(m_meshName);
 
 	TextureResource* containerResource = rS->GetTexture("container");

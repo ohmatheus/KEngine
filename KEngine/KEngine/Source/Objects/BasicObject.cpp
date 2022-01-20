@@ -35,7 +35,7 @@ void		BasicObject::Update(float dt)
 }
 
 //----------------------------------------------------------
-void		BasicObject::Render(RenderSystem* rS, Camera* cam)
+void		BasicObject::Render(RenderSystem* rS, Camera* cam, GLShader* shader)
 {
 	
 }
