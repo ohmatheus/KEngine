@@ -148,7 +148,7 @@ void	BasicScene::Render()
 	//glStencilFunc(GL_NEVER, 1, 0xFF);
 	glStencilMask(0xFF); // make sure we don't update the stencil buffer while drawing lights and stuffs
 
-	for (int i = 0; i < m_pointLights.size(); i++) 
+	for (int i = 0; i < m_pointLights.size(); i++)
 		m_pointLights[i]->Render(rS, &m_camera, overrideShader ? overrideShader : lightShader);
 
 	for (int i = 0; i < m_spotLights.size(); i++)
