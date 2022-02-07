@@ -378,7 +378,6 @@ void	RenderSystem::_LoadShaders()
 			shader->AddUniform("model");
 			shader->AddUniform("view");
 			shader->AddUniform("proj");
-
 		}
 		shader->Unbind();
 
@@ -386,6 +385,30 @@ void	RenderSystem::_LoadShaders()
 
 		shader->m_name = "Depth";
 		RegisterShader("Depth", shader);
+	}
+
+	// Outline Shader
+	{
+		GLShader* shader = new GLShader();
+	
+		std::string vertexShader = ReadFromFile(ShaderPath("OutlineShader.vshader"));
+		std::string fragShader = ReadFromFile(ShaderPath("OutlineShader.fshader"));
+	
+		shader->LoadShader(GLShader::VERTEX_SHADER, vertexShader.c_str());
+		shader->LoadShader(GLShader::FRAGMENT_SHADER, fragShader.c_str());
+		shader->CreateAndLink();
+		shader->Bind();
+		{
+			shader->AddUniform("model");
+			shader->AddUniform("view");
+			shader->AddUniform("proj");
+		}
+		shader->Unbind();
+	
+		GL_CHECK_ERRORS
+	
+		shader->m_name = "OutlineShader";
+		RegisterShader("OutlineShader", shader);
 	}
 }
 

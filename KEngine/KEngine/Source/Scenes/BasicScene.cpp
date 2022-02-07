@@ -76,13 +76,13 @@ void	BasicScene::BuildScene()
 		glm::vec3(-3.3f,  1.0f, -2.5f)
 	};
 
-	for (unsigned int i = 0; i < 10; i++)
+	for (uint i = 0; i < 10; i++)
 	{
 		float angle = 20.0f * i;
 		ModeledObject* lightCastedObject = new ModeledObject();
 
+		lightCastedObject->SetOutlined(true);
 		lightCastedObject->SetShaderName("SimpleLightCastedObject");
-
 		lightCastedObject->SetModelName("ContainerCube");
 
 		lightCastedObject->Position() = cubePositions[i];
@@ -145,7 +145,10 @@ void	BasicScene::Render()
 		m_camera.SetProjMat(glm::perspective(glm::radians(m_camera.Fov()), (float)m_game->GetRenderWindow()->Width() / (float)m_game->GetRenderWindow()->Height(), 0.1f, 200.0f));
 	}
 
-	for (int i = 0; i < m_pointLights.size(); i++)
+	//glStencilFunc(GL_NEVER, 1, 0xFF);
+	glStencilMask(0xFF); // make sure we don't update the stencil buffer while drawing lights and stuffs
+
+	for (int i = 0; i < m_pointLights.size(); i++) 
 		m_pointLights[i]->Render(rS, &m_camera, overrideShader ? overrideShader : lightShader);
 
 	for (int i = 0; i < m_spotLights.size(); i++)
@@ -153,6 +156,12 @@ void	BasicScene::Render()
 
 	// render lightCastedObject
 	{
+		{
+			glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+			glStencilFunc(GL_ALWAYS, 1, 0xFF); // write stencil buffer 1 for each fragment
+			glStencilMask(0xFF); // enable writing
+		}
+
 		for (int i = 0; i < m_lightCastedObjects.size(); i++)
 		{
 			glm::mat4			modelW = m_lightCastedObjects[i]->ModelWorldMatrix();
@@ -218,6 +227,35 @@ void	BasicScene::Render()
 				model->Draw(shader);
 				shader->Unbind();
 			}
+		}
+
+		{
+			glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+			glStencilMask(0x00); // disable writing
+			glDisable(GL_DEPTH_TEST);
+		}
+
+		for (int i = 0; i < m_lightCastedObjects.size(); i++)
+		{
+			if (!m_lightCastedObjects[i]->IsOutline())
+				continue;
+
+			glm::mat4			modelW = m_lightCastedObjects[i]->ModelWorldMatrix();
+			modelW = glm::scale(modelW, glm::vec3(1.1f, 1.1f, 1.1f));
+			Model* model = rS->GetModel(m_lightCastedObjects[i]->ModelName());
+			GLShader* shader = rS->GetShader("OutlineShader");
+			shader->Bind();
+			glUniformMatrix4fv(shader->Uniform("model"), 1, GL_FALSE, glm::value_ptr(modelW));
+			glUniformMatrix4fv(shader->Uniform("view"), 1, GL_FALSE, glm::value_ptr(m_camera.GetViewM()));
+			glUniformMatrix4fv(shader->Uniform("proj"), 1, GL_FALSE, glm::value_ptr(m_camera.ProjMat()));
+			model->Draw(shader);
+			shader->Unbind();
+		}
+
+		{
+			glStencilFunc(GL_ALWAYS, 1, 0xFF); // write stencil buffer 1 for each fragment
+			glStencilMask(0xFF); // enable writing
+			glEnable(GL_DEPTH_TEST);
 		}
 	}
 }

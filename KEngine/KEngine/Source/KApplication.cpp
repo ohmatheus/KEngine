@@ -40,11 +40,15 @@ void	KApplication::Setup()
 	m_renderWindow = new KWindow();
 	m_renderWindow->CreateAndOpen("K Main Window", 0.2f, 0.3f, 0.3f);
 
-	glClearDepth(1.f);
 	glEnable(GL_DEPTH_TEST);
+	glClearDepth(1.f);
 	//glDepthMask(GL_FALSE);
 	glDepthFunc(GL_LESS);
-	//glDepthFunc(GL_ALWAYS);
+
+	glEnable(GL_STENCIL_TEST); 
+	glStencilMask(0xFF);
+	glStencilFunc(GL_ALWAYS, 1, 0xFF);
+	//glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 
 	m_game = new Game(m_renderWindow);
 	m_renderWindow->SetGame(m_game);

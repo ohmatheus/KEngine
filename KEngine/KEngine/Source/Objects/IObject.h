@@ -28,10 +28,14 @@ public:
 	const std::string&		ShaderName() { return m_shaderName; }
 	void					SetShaderName(const char* name) { m_shaderName = name; }
 
+	bool					IsOutline() { return m_isOutlined; }
+	void					SetOutlined(bool outL) { m_isOutlined = outL; }
+
 protected:
 	glm::vec3				m_position; // x y z
 	glm::vec3				m_rotation; // pitch yaw roll
 	glm::vec3				m_scale;
 	glm::vec3				m_color;
 	std::string				m_shaderName; // TODO replace by an ID
+	bool					m_isOutlined;
 };
