@@ -146,6 +146,8 @@ void	BasicScene::OnSceneStart()
 }
 
 //----------------------------------------------------------
+std::map<float, ModeledObject*> sorted;
+
 void	BasicScene::Update(float dt)
 {
 	super::Update(dt);
@@ -155,6 +157,12 @@ void	BasicScene::Update(float dt)
 
 	for (int i = 0; i < m_spotLights.size(); i++)
 		m_spotLights[i]->Update(dt);
+
+	for (unsigned int i = 0; i < m_blendedObjects.size(); i++)
+	{
+		float distance = glm::length(m_camera.Position() - m_blendedObjects[i]->Position());
+		sorted[distance] = m_blendedObjects[i];
+	}
 }
 
 //----------------------------------------------------------
@@ -305,11 +313,13 @@ void	BasicScene::Render()
 		// Blended Objects
 		{
 			// don't forget to sort blended object depth to camera before render
-			for (int i = 0; i < m_blendedObjects.size(); i++)
+			//for (int i = 0; i < m_blendedObjects.size(); i++)
+			for (std::map<float, ModeledObject*>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); ++it)
 			{
-				GLShader* shader = rS->GetShader(m_blendedObjects[i]->ShaderName());
-				glm::mat4			modelW = m_blendedObjects[i]->ModelWorldMatrix();
-				Model* model = rS->GetModel(m_blendedObjects[i]->ModelName());
+				ModeledObject*	blendedObjects = it->second;
+				GLShader*		shader = rS->GetShader(blendedObjects->ShaderName());
+				glm::mat4		modelW = blendedObjects->ModelWorldMatrix();
+				Model*			model = rS->GetModel(blendedObjects->ModelName());
 
 				shader->Bind();
 
