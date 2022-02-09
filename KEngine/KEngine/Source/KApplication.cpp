@@ -50,6 +50,9 @@ void	KApplication::Setup()
 	glStencilFunc(GL_ALWAYS, 1, 0xFF);
 	//glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);// semi transparent texture
+
 	m_game = new Game(m_renderWindow);
 	m_renderWindow->SetGame(m_game);
 	m_ControllerWindow->SetGame(m_game);

@@ -51,6 +51,8 @@ IScene* BasicScene::Clone()
 	return clone;
 }
 
+ModeledObject* planeGrassObj = nullptr;
+
 //----------------------------------------------------------
 void	BasicScene::BuildScene()
 {
@@ -60,6 +62,13 @@ void	BasicScene::BuildScene()
 		obj->SetShaderName("SimpleModel");
 		obj->Position() = glm::vec3(0.f, 0.f, 0.f);
 		m_lightCastedObjects.push_back(obj);
+	}
+
+	{
+		planeGrassObj = new ModeledObject();
+		planeGrassObj->SetModelName("PlaneGrass");
+		planeGrassObj->SetShaderName("AlphaCutoff");
+		planeGrassObj->Position() = glm::vec3(3.f, 0.f, 2.f);
 	}
 
 	glm::vec3 cubePositions[] =
@@ -101,6 +110,23 @@ void	BasicScene::BuildScene()
 	m_lightCastedObjects.push_back(lightCastedObject);
 
 	CreateLights();
+
+	// Blended Objects
+	{
+		ModeledObject* obj = new ModeledObject();
+		obj->SetModelName("TransparentWindow");
+		obj->SetShaderName("SimpleTextureBlended");
+		obj->Position() = glm::vec3(0.f, 0.f, 3.f);
+		m_blendedObjects.push_back(obj);
+	}
+
+	{
+		ModeledObject* obj = new ModeledObject();
+		obj->SetModelName("TransparentWindow");
+		obj->SetShaderName("SimpleTextureBlended");
+		obj->Position() = glm::vec3(0.f, 0.f, 2.f);
+		m_blendedObjects.push_back(obj);
+	}
 
 	// to remove
 	for (int i = 0; i < m_pointLights.size(); i++)
@@ -256,6 +282,45 @@ void	BasicScene::Render()
 			glStencilFunc(GL_ALWAYS, 1, 0xFF); // write stencil buffer 1 for each fragment
 			glStencilMask(0xFF); // enable writing
 			glEnable(GL_DEPTH_TEST);
+		}
+
+		//----------------------------------------------------------
+		// grass
+		{
+			GLShader* shader = rS->GetShader(planeGrassObj->ShaderName());
+			glm::mat4			modelW = planeGrassObj->ModelWorldMatrix();
+			Model* model = rS->GetModel(planeGrassObj->ModelName());
+
+			shader->Bind();
+
+			glUniformMatrix4fv(shader->Uniform("model"), 1, GL_FALSE, glm::value_ptr(modelW));
+			glUniformMatrix4fv(shader->Uniform("view"), 1, GL_FALSE, glm::value_ptr(m_camera.GetViewM()));
+			glUniformMatrix4fv(shader->Uniform("proj"), 1, GL_FALSE, glm::value_ptr(m_camera.ProjMat()));
+
+			model->Draw(shader);
+
+			shader->Unbind();
+		}
+
+		// Blended Objects
+		{
+			// don't forget to sort blended object depth to camera before render
+			for (int i = 0; i < m_blendedObjects.size(); i++)
+			{
+				GLShader* shader = rS->GetShader(m_blendedObjects[i]->ShaderName());
+				glm::mat4			modelW = m_blendedObjects[i]->ModelWorldMatrix();
+				Model* model = rS->GetModel(m_blendedObjects[i]->ModelName());
+
+				shader->Bind();
+
+				glUniformMatrix4fv(shader->Uniform("model"), 1, GL_FALSE, glm::value_ptr(modelW));
+				glUniformMatrix4fv(shader->Uniform("view"), 1, GL_FALSE, glm::value_ptr(m_camera.GetViewM()));
+				glUniformMatrix4fv(shader->Uniform("proj"), 1, GL_FALSE, glm::value_ptr(m_camera.ProjMat()));
+
+				model->Draw(shader);
+
+				shader->Unbind();
+			}
 		}
 	}
 }

@@ -38,6 +38,7 @@ public:
 
 private:
 	std::vector<ModeledObject*>	m_lightCastedObjects;
+	std::vector<ModeledObject*>	m_blendedObjects;
 
 	DirectionalLight*			m_dirLight;
 	std::vector<PointLight*>	m_pointLights;
